@@ -37,7 +37,7 @@ export const QuizComponent = styled.div`
 export const Question = styled.div`
     width: 100%;
     height: 100%;
-    background-color: rgb(231, 51, 255);
+    background-color: #90D5FF;
     border-radius: 20px;
 
 `;
