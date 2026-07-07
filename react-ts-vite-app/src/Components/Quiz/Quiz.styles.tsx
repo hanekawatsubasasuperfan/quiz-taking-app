@@ -19,13 +19,14 @@ export const Wrapper = styled.div`
 `;
 
 export const QuizContainer = styled.div`
-    background-color: #90D5FF;
+    background-color: #c1ffb6;
     width:550px;
     height:350px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 `;
 
 export const QuizComponent = styled.div`
@@ -37,8 +38,13 @@ export const QuizComponent = styled.div`
 export const Question = styled.div`
     width: 100%;
     height: 100%;
-    background-color: #90D5FF;
+    //b6c1ff
+    //90D5FF
+    background-color: #b6c1ff;
     border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 `;
 export const Answer = styled.div`
@@ -46,4 +52,34 @@ export const Answer = styled.div`
     height: 100%;
     background-color: white;
     border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
+
+export const ButtonContainer = styled.div`
+    width: 150px;
+    height:50px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+`;
+
+export const Backward = styled.div`
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-right: 40px solid blanchedalmond;
+    border-bottom: 20px solid transparent;
+`;
+
+export const Forward = styled.div`
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-left: 40px solid blanchedalmond;
+    border-bottom: 20px solid transparent;
+`;
+
