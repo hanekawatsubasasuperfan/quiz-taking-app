@@ -18,12 +18,31 @@ export default function Quiz() {
   const [index, setIndex] = useState(0);
   const [question, setQuestion] = useState(questions[index].question);
   const [answer, setAnswer] = useState(questions[index].answer);
-  
-  
+  const len_questions = questions.length;
 
 
   function handleFlip() {
     setIsFlipped(!isFlipped);
+  }
+
+  function handleForward(){
+    if(index+1<len_questions){
+      // why doesnt this version work??
+      // setIndex(index+1);
+      // setQuestion(questions[index].question)
+      // setAnswer(questions[index].answer)
+      setQuestion(questions[index+1].question)
+      setAnswer(questions[index+1].answer)
+      setIndex(index+1);
+    }
+  }
+
+  function handleBackward(){
+    if(index-1>=0){
+      setQuestion(questions[index-1].question)
+      setAnswer(questions[index-1].answer)
+      setIndex(index-1)
+    }
   }
 
   return (
@@ -35,8 +54,8 @@ export default function Quiz() {
             {isFlipped && <Answer style={{transform: 'rotateY(180deg)'}}>{answer}</Answer>}
           </QuizComponent>
           <ButtonContainer>
-            <Backward/>
-            <Forward/>
+            <Backward onClick={handleBackward}/>
+            <Forward onClick={handleForward}/>
           </ButtonContainer>
         </QuizContainer>
       </Wrapper>
