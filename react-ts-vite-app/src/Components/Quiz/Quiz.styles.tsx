@@ -35,6 +35,13 @@ export const QuizComponent = styled.div`
     border-radius: 10px;
 `;  
 
+export const Card = styled.div`
+    height:100%;
+    width:100%
+`;
+
+
+
 export const Question = styled.div`
     width: 100%;
     height: 100%;
@@ -83,3 +90,32 @@ export const Forward = styled.div`
     border-bottom: 20px solid transparent;
 `;
 
+export const Marking = styled.div`
+    height:50px;
+    width:35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 0;
+    `;
+
+export const Wrong = styled.div`
+    color: red;
+    font-size: large;
+    font-weight: bolder;
+    top: -20px;
+    position: relative;
+
+`;
+
+
+export const Submit = styled.button`
+    margin-top:15px;
+    margin-left:30px;
+    width:85px;
+    height:30px;
+    background-color: orange;
+    border-color: aliceblue;
+
+`;

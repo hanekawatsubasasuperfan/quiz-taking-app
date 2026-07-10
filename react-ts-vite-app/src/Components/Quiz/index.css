@@ -1,0 +1,21 @@
+/*
+Source - https://stackoverflow.com/a/21968665
+Posted by Kheema Pandey, modified by community. See post 'Timeline' for change history
+Retrieved 2026-07-07, License - CC BY-SA 4.0
+*/
+
+ul li:before {
+  content: '\2713';
+  display: inline-block;
+  color: green;
+  padding: 6px 6px 0 0;
+  margin-right:25px;
+  /* margin-top:0px; */
+  margin-bottom: 10px;
+  position: relative;
+}
+
+ul li {
+  list-style-type: none;
+  font-size: 1.5em;
+}
