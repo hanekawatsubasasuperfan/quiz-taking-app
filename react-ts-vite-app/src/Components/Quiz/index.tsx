@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {Wrapper, QuizComponent, Question, Answer, ButtonContainer, QuizContainer, Backward, Forward, Marking, Wrong, Submit, Card} from './Quiz.styles';
 import {useState} from 'react';
+import {useNavigate} from '@tanstack/react-router'
 import './index.css';
-import './button.css'
 
 
 
@@ -18,6 +18,7 @@ interface Data{
   ]
 
 export default function Quiz() {
+  const navigate = useNavigate();
   const [grade, setGrade] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [index, setIndex] = useState(0);
@@ -55,6 +56,7 @@ export default function Quiz() {
     you cant go back only if you've answered it?
     you can go back but you cant change your choice?
     for now I wont do any of those aforementioned and instead ill just make sure the grade cant go negative or be greater than the total number of questions
+    ADD CHECK FOR EVERY QUESTION HAS BEEN ANSWERED AND ALERT USESRS OTHERWISE 
     */
     if(mark==="wrong"){
       if(grade-1<0){
@@ -78,9 +80,10 @@ export default function Quiz() {
     should submit be possible at every location? if so when score is submitted should final grade be calculated using only the questions the user has gone through or just grade/len_questions?
     should submit only appear on the last page?(im going with this option for now)
     */
-
-
-
+    let final_grade = grade/len_questions;
+    final_grade = Math.round(final_grade * 10000) / 100
+    alert(`Final score ${grade}/${len_questions} or ${final_grade}%`)
+    navigate({to:'/user'})
   }
 
   return (
@@ -91,7 +94,7 @@ export default function Quiz() {
               {!isFlipped && <Question>{question}</Question>}
               {isFlipped && <Answer style={{transform: 'rotateY(180deg)'}}>{answer}</Answer>}
             </Card>
-            {index+1===len_questions ? <Submit>submit</Submit> : <></>}
+            {index+1===len_questions ? <Submit onClick={handleSubmit}>submit</Submit> : <></>}
           </QuizComponent>
 
           <ButtonContainer>
