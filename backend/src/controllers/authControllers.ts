@@ -6,18 +6,19 @@ import type {Request, Response} from 'express'
 import {Pool} from 'pg';
 import type { QueryResult } from "pg";
 
-
-const pool = new Pool({
-    user: "my_user",
-    host: "localhost",
-    database: "quiz_app",
-    password: "my_user",
-    port:5432
-})
-
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+const pool = new Pool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+});
+
+
 
 export async function signup(req: Request, res: Response){
     const errors = validationResult(req);
