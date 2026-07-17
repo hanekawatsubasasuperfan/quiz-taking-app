@@ -36,10 +36,45 @@ export async function signup(req: Request, res: Response){
         const {name, email, password} = req.body;
         
         // check if user already exists
-        const res = await pool.query(
+        const result = await pool.query(
             "SELECT * FROM users WHERE name = $1",
             [name]
         )
+
+        if(result.rowCount==1){
+            return res.status(409).json({
+                status:'error',
+                msg: " User already exists",
+            })
+        }
+
+        // generate a hashed password
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        // create user in database
+        const createdUser = await pool.query(
+            "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)",
+            [name, email, hashedPassword]
+        )
+
+        // get user ID to use for JWT token
+        const user = await pool.query(
+            "SELECT * FROM users WHERE name = $1",
+            [name]
+        )
+
+        // generate a JWT token
+        const token = jwt.sign(
+            {
+                id: user.rows[0].id,
+                username: user.rows[0].name
+            },
+            process.env.JWT_SECRET_KEY!,
+            {
+                expiresIn: "1h"
+            }
+        )
+        
 
     }catch(err){
 

@@ -15,7 +15,7 @@ const pool = new Pool({
 export async function getUsers(){
     try{
         let res = await pool.query("SELECT * FROM users");
-        return (res.rows);
+        return (res.rows[0]);
     }catch(err){
         console.log(err)
     }
