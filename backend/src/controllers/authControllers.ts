@@ -74,9 +74,23 @@ export async function signup(req: Request, res: Response){
                 expiresIn: "1h"
             }
         )
-        
 
-    }catch(err){
-
+        return res.status(201).json({
+            status: 'success',
+            msg: 'User created successfully.',
+            user:{
+                id: user.rows[0].id,
+                username: user.rows[0].name,
+                token
+            }
+            
+        })
+    }catch(err: any){
+        console.error(err)
+        return res.status(500).json({
+            status: 'error',
+            msg: 'Internal server error',
+            errors:err.message
+        })
     }
 }
