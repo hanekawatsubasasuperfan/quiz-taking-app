@@ -17,12 +17,12 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 
-app.use('/', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
     return res.json({ msg: "this is the home page."});
 });
 
 app.listen(process.env.PORT, async () => {
     console.log(`Server Started at port: ${process.env.PORT}`);
-    const res = await getUsers();
-    console.log(res);
+    // const res = await getUsers();
+    // console.log(res);
 });

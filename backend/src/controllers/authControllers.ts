@@ -20,7 +20,8 @@ const pool = new Pool({
 
 
 
-export async function signup(req: Request, res: Response){
+export async function Signup(req: Request, res: Response){
+    console.log(req.body)
     const errors = validationResult(req);
 
     // returns if error
@@ -41,7 +42,7 @@ export async function signup(req: Request, res: Response){
             [name]
         )
 
-        if(result.rowCount==1){
+        if(result.rowCount===1){
             return res.status(409).json({
                 status:'error',
                 msg: " User already exists",
@@ -92,5 +93,64 @@ export async function signup(req: Request, res: Response){
             msg: 'Internal server error',
             errors:err.message
         })
+    }
+}
+
+export async function Login(req:Request, res: Response){
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            status:'error',
+            msg:'Validation error',
+            errors:errors.array()
+        })
+    }
+
+    try{
+        const {name,email,password} = req.body;
+
+        // retrieve user
+        const user = await pool.query(
+            "SELECT * FROM users WHERE name = $1",
+            [name]
+        )
+        console.log(user.rows)
+
+        // check if user exists and compare passwords
+        if(user.rowCount === 0 || !(await bcrypt.compare(password, user.rows[0].password_hash))){
+            return res.status(409).json({
+                status:'error',
+                msg:'Invalid credentials',
+            })
+        }
+
+        // generate token
+        const token = jwt.sign(
+            {
+                id: user.rows[0].id,
+            },
+            process.env.JWT_SECRET_KEY!,
+            {
+                expiresIn : "1h",
+            }
+        )
+
+        return res.status(200).json({
+            status:'success',
+            msg: 'Successfully logged in nyan',
+            user:{
+                name:user.rows[0].name,
+                token,
+            }
+        })
+
+    }catch(err:any){
+        console.error(err);
+        return res.status(500).json({
+            status: 'error',
+            error: err.message,
+            msg: 'Internal server error.'
+        });
     }
 }
