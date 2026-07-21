@@ -129,6 +129,7 @@ export async function Login(req:Request, res: Response){
         const token = jwt.sign(
             {
                 id: user.rows[0].id,
+                username: user.rows[0].name
             },
             process.env.JWT_SECRET_KEY!,
             {
@@ -153,4 +154,10 @@ export async function Login(req:Request, res: Response){
             msg: 'Internal server error.'
         });
     }
+}
+
+export async function Dashboard(req:Request, res:Response){
+    return res.status(200).json({
+        msg: "This is the Dashboard Page."
+    });
 }
