@@ -1,27 +1,14 @@
 import {validationResult} from 'express-validator'
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import type {Request, Response} from 'express'
+import {authCookieConfig} from '../config/cookieConfigs.js'
 
-import {Pool} from 'pg';
-import type { QueryResult } from "pg";
-
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const pool = new Pool({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-});
+import {pool} from '../config/database.js'
+import { generateToken } from '../utils/generateToken.js';
 
 
 
-export async function Signup(req: Request, res: Response){
-    console.log(req.body)
+export async function signup(req: Request, res: Response){
     const errors = validationResult(req);
 
     // returns if error
@@ -38,11 +25,11 @@ export async function Signup(req: Request, res: Response){
         
         // check if user already exists
         const result = await pool.query(
-            "SELECT * FROM users WHERE name = $1",
-            [name]
+            "SELECT id FROM users WHERE name = $1 or email = $2",
+            [name, email]
         )
 
-        if(result.rowCount===1){
+        if(result.rowCount !== null && result.rowCount > 0){
             return res.status(409).json({
                 status:'error',
                 msg: " User already exists",
@@ -54,49 +41,33 @@ export async function Signup(req: Request, res: Response){
 
         // create user in database
         const createdUser = await pool.query(
-            "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)",
+            `INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)
+            RETURNING id, name, email
+            `,
             [name, email, hashedPassword]
         )
 
-        // get user ID to use for JWT token
-        const user = await pool.query(
-            "SELECT * FROM users WHERE name = $1",
-            [name]
-        )
+        res.cookie("token", generateToken({id: createdUser.rows[0].id, username: createdUser.rows[0].name}), authCookieConfig);
 
-        // generate a JWT token
-        const token = jwt.sign(
-            {
-                id: user.rows[0].id,
-                username: user.rows[0].name
-            },
-            process.env.JWT_SECRET_KEY!,
-            {
-                expiresIn: "1h"
-            }
-        )
 
         return res.status(201).json({
             status: 'success',
             msg: 'User created successfully.',
             user:{
-                id: user.rows[0].id,
-                username: user.rows[0].name,
-                token
+                id: createdUser.rows[0].id,
+                name: createdUser.rows[0].name,
             }
             
         })
-    }catch(err: any){
-        console.error(err)
+    }catch(err: unknown){
         return res.status(500).json({
             status: 'error',
             msg: 'Internal server error',
-            errors:err.message
         })
     }
 }
 
-export async function Login(req:Request, res: Response){
+export async function login(req:Request, res: Response){
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
@@ -108,56 +79,94 @@ export async function Login(req:Request, res: Response){
     }
 
     try{
-        const {name,email,password} = req.body;
+        const {name, password} = req.body;
 
         // retrieve user
         const user = await pool.query(
-            "SELECT * FROM users WHERE name = $1",
+            "SELECT id, name, email, password_hash FROM users WHERE name = $1",
             [name]
         )
-        console.log(user.rows)
 
         // check if user exists and compare passwords
         if(user.rowCount === 0 || !(await bcrypt.compare(password, user.rows[0].password_hash))){
-            return res.status(409).json({
+            return res.status(401).json({
                 status:'error',
-                msg:'Invalid credentials',
+                msg:'Invalid username or password',
             })
         }
 
-        // generate token
-        const token = jwt.sign(
-            {
-                id: user.rows[0].id,
-                username: user.rows[0].name
-            },
-            process.env.JWT_SECRET_KEY!,
-            {
-                expiresIn : "1h",
-            }
-        )
+        res.cookie("token", generateToken({id: user.rows[0].id, username: user.rows[0].name}), authCookieConfig);
 
         return res.status(200).json({
             status:'success',
             msg: 'Successfully logged in nyan',
             user:{
-                name:user.rows[0].name,
-                token,
+                id: user.rows[0].id,
+                name: user.rows[0].name,
             }
         })
 
-    }catch(err:any){
-        console.error(err);
+    }catch(err: unknown){
         return res.status(500).json({
             status: 'error',
-            error: err.message,
             msg: 'Internal server error.'
         });
     }
 }
 
-export async function Dashboard(req:Request, res:Response){
+export async function dashboard(req:Request, res:Response){
+    try {
+        if (!req.user) {
+        return res.status(401).json({
+            status: "error",
+            msg: "Authentication required",
+        });
+        }
+
+        const result = await pool.query(
+        `
+        SELECT id, name, email
+        FROM users
+        WHERE id = $1
+        `,
+        [req.user.id]
+        );
+
+        if (result.rowCount !== 1) {
+        return res.status(404).json({
+            status: "error",
+            msg: "User not found",
+        });
+        }
+
+        const user = result.rows[0];
+
+        return res.status(200).json({
+        status: "success",
+        user: {
+            id: user.id,
+            username: user.name,
+            email: user.email,
+        },
+        });
+    } catch (error) {
+
+        return res.status(500).json({
+        status: "error",
+        msg: "Unable to retrieve user",
+        });
+    }
+}
+
+export  async function logout(req: Request, res: Response){
+    res.clearCookie("token",{
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
+    })
+
     return res.status(200).json({
-        msg: "This is the Dashboard Page."
+        status: "success",
+        msg: "Logged out successfully",
     });
 }

@@ -1,12 +1,15 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
+
 import type {  Request, Response } from "express";
-import {getUsers} from './models/userModel.js'
 import {authRouter} from './routes/authRouter.js'
 
 import express from "express";
-import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 
-dotenv.config();
 
 const app = express();
 
@@ -14,6 +17,7 @@ const app = express();
 // Middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
 
