@@ -1,115 +1,154 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {Wrapper, QuizComponent, Question, Answer, ButtonContainer, QuizContainer, Backward, Forward, Marking, Wrong, Submit, Card} from './Quiz.styles';
-import {useState} from 'react';
-import {useNavigate} from '@tanstack/react-router'
-import './index.css';
+import { useState } from "react";
 
+import {
+  Wrapper,
+  QuizContainer,
+  FlipCard,
+  FlipInner,
+  FlipFront,
+  FlipBack,
+  CardTitle,
+  CardLabel,
+  FlipHint,
+  QuestionMeta,
+  ButtonGroup,
+  Button,
+} from "./Quiz.styles";
 
+interface Data {
+  question: string;
+  answer: string;
+  index: number;
+}
 
-interface Data{
-    question:string;
-    answer:string;
-    index:number;
-  }
-  const questions: Data[]  = [
-    {question: 'What is the capital of France?', answer: 'Paris', index: 0,},
-    {question: 'What is the capital of China?', answer: 'Beijing', index: 1},
-    {question: 'What is the capital of Canada?', answer: 'Ottawa', index: 2},
-  ]
+const questions: Data[] = [
+  {
+    question: "What is the capital of France?",
+    answer: "Paris",
+    index: 0,
+  },
+  {
+    question: "What is the capital of China?",
+    answer: "Beijing",
+    index: 1,
+  },
+  {
+    question: "What is the capital of Canada?",
+    answer: "Ottawa",
+    index: 2,
+  },
+];
 
 export default function Quiz() {
-  const navigate = useNavigate();
   const [grade, setGrade] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [index, setIndex] = useState(0);
-  const [question, setQuestion] = useState(questions[index].question);
-  const [answer, setAnswer] = useState(questions[index].answer);
+
   const len_questions = questions.length;
+  const question = questions[index].question;
+  const answer = questions[index].answer;
 
   function handleFlip() {
     setIsFlipped(!isFlipped);
   }
 
-  function handleForward(){
-    if(index+1<len_questions){
-      // why doesnt this version work??
-      // setIndex(index+1);
-      // setQuestion(questions[index].question)
-      // setAnswer(questions[index].answer)
-      setQuestion(questions[index+1].question)
-      setAnswer(questions[index+1].answer)
-      setIndex(index+1);
+  function handleForward() {
+    if (index < len_questions - 1) {
+      setIndex(index + 1);
+      setIsFlipped(false);
     }
   }
 
-  function handleBackward(){
-    if(index-1>=0){
-      setQuestion(questions[index-1].question)
-      setAnswer(questions[index-1].answer)
-      setIndex(index-1)
+  function handleBackward() {
+    if (index > 0) {
+      setIndex(index - 1);
+      setIsFlipped(false);
     }
   }
 
-  function handleMark(mark:string){
-    /*
-    should I make it so that you cant go back to the previous question?
-    you cant go back only if you've answered it?
-    you can go back but you cant change your choice?
-    for now I wont do any of those aforementioned and instead ill just make sure the grade cant go negative or be greater than the total number of questions
-    ADD CHECK FOR EVERY QUESTION HAS BEEN ANSWERED AND ALERT USESRS OTHERWISE 
-    */
-    if(mark==="wrong"){
-      if(grade-1<0){
-        setGrade(0);
-      }else{
-        setGrade(grade-1)
-      }
-    }else if(mark==="correct"){
-      if(grade+1>len_questions){
-        setGrade(len_questions)
-      }else{
-        setGrade(grade+1);
-      }
-    }
-    
-    handleForward()
+  function handleMark() {
+    setGrade(grade + 1);
   }
 
-  function handleSubmit(){
-    /*
-    should submit be possible at every location? if so when score is submitted should final grade be calculated using only the questions the user has gone through or just grade/len_questions?
-    should submit only appear on the last page?(im going with this option for now)
-    */
-    let final_grade = grade/len_questions;
-    final_grade = Math.round(final_grade * 10000) / 100
-    alert(`Final score ${grade}/${len_questions} or ${final_grade}%`)
-    navigate({to:'/user'})
+  function handleSubmit() {
+    let final_grade = grade / len_questions;
+
+    final_grade =
+      Math.round(final_grade * 10000) / 100;
+
+    alert(
+      `Final score ${grade}/${len_questions} or ${final_grade}%`,
+    );
   }
 
   return (
-      <Wrapper>
-        <QuizContainer>
-          <QuizComponent >
-            <Card onClick={handleFlip} style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)', transition: 'transform 0.6s' }}>
-              {!isFlipped && <Question>{question}</Question>}
-              {isFlipped && <Answer style={{transform: 'rotateY(180deg)'}}>{answer}</Answer>}
-            </Card>
-            {index+1===len_questions ? <Submit onClick={handleSubmit}>submit</Submit> : <></>}
-          </QuizComponent>
+    <Wrapper>
+      <QuizContainer>
+        <FlipCard onClick={handleFlip}>
+          <FlipInner $isFlipped={isFlipped}>
+            <FlipFront>
+              <CardTitle>{question}</CardTitle>
 
-          <ButtonContainer>
-            <Backward onClick={handleBackward}/>
-            <Marking>
-              <ul onClick={()=>handleMark('correct')}>
-                <li></li>
-              </ul>
-              <Wrong onClick={()=>handleMark('wrong')}>
-                X
-              </Wrong>
-            </Marking>
-            <Forward onClick={handleForward}/>
-          </ButtonContainer>
-        </QuizContainer>
-      </Wrapper>
-    )
+              <CardLabel>Question</CardLabel>
+
+              <FlipHint>
+                Click to reveal answer
+              </FlipHint>
+            </FlipFront>
+
+            <FlipBack>
+              <CardTitle>{answer}</CardTitle>
+
+              <CardLabel>Answer</CardLabel>
+
+              <FlipHint>
+                Click to show question
+              </FlipHint>
+            </FlipBack>
+          </FlipInner>
+        </FlipCard>
+
+        <QuestionMeta>
+          Question {index + 1} / {len_questions}
+        </QuestionMeta>
+
+        <ButtonGroup>
+          <Button
+            $variant="outline"
+            onClick={handleBackward}
+            disabled={index === 0}
+          >
+            ←
+          </Button>
+
+          <Button
+            $variant="correct"
+            onClick={handleMark}
+          >
+            ✓
+          </Button>
+
+          <Button $variant="wrong">
+            ✕
+          </Button>
+
+          {index === len_questions - 1 ? (
+            <Button
+              $variant="primary"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+          ) : (
+            <Button
+              $variant="outline"
+              onClick={handleForward}
+            >
+              →
+            </Button>
+          )}
+        </ButtonGroup>
+      </QuizContainer>
+    </Wrapper>
+  );
 }
