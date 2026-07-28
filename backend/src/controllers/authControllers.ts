@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 import type {Request, Response} from 'express'
 import {authCookieConfig} from '../config/cookieConfigs.js'
 
+
 import {pool} from '../config/database.js'
 import { generateToken } from '../utils/generateToken.js';
-
 
 
 export async function signup(req: Request, res: Response){

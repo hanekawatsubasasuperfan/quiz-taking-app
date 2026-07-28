@@ -19,7 +19,7 @@ export const Wrapper = styled.div`
     background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
 `
 
-export const FormContainer = styled.div`
+export const FormContainer = styled.form`
     height:80dvh;
     width:60dvh;
     background-color: white;
@@ -38,7 +38,7 @@ export const LoginText = styled.header`
 `;
 
 
-export const UsernameInput = styled.input.attrs({type: "text"})`
+export const UsernameInput = styled.input.attrs({type: "text", placeholder:"username"})`
     width:65%;
     height:6%;
 `
@@ -50,7 +50,7 @@ export const UsernameInputLabel = styled.label`
     font-size: large;
 `;
 
-export const PasswordInput = styled.input.attrs({type: "text"})`
+export const PasswordInput = styled.input.attrs({type: "text", placeholder:"password"})`
     width:65%;
     height:6%;
 `
@@ -61,3 +61,28 @@ export const PasswordInputLabel = styled.label`
     font-weight: bold;
     font-size: large;
 `;
+
+export const Submit = styled.input.attrs({type:"submit"})`
+    width: 35%;
+    height: 6%;
+    margin-top: -5dvh;
+
+    background: linear-gradient(135deg, #6c63ff, #444cf7);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 16px rgba(68, 76, 247, 0.3);
+    }
+
+    &:active {
+        transform: translateY(0) scale(0.98);
+    }
+`
