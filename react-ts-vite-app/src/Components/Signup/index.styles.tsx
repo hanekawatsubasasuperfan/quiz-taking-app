@@ -31,7 +31,7 @@ export const FormContainer = styled.form`
     gap: 15dvh;
 `
 
-export const LoginText = styled.header`
+export const SignupText = styled.header`
     color: black;
     font-weight: bolder;
     font-size: x-large;
@@ -86,3 +86,15 @@ export const Submit = styled.input.attrs({type:"submit"})`
         transform: translateY(0) scale(0.98);
     }
 `
+
+export const EmailInput = styled.input.attrs({type: "email", placeholder:"password"})`
+    width:65%;
+    height:6%;
+`
+
+export const EmailInputLabel = styled.label`
+    color:black;
+    margin-bottom: -15dvh;
+    font-weight: bold;
+    font-size: large;
+`;

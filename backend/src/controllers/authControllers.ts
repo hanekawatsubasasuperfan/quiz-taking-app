@@ -25,15 +25,30 @@ export async function signup(req: Request, res: Response){
         
         // check if user already exists
         const result = await pool.query(
-            "SELECT id FROM users WHERE name = $1 or email = $2",
+            "SELECT name, email FROM users WHERE name = $1 or email = $2",
             [name, email]
         )
 
         if(result.rowCount !== null && result.rowCount > 0){
-            return res.status(409).json({
-                status:'error',
-                msg: " User already exists",
-            })
+            const existingUser = result.rows[0];
+
+
+            // the code is to make it error checking in the frontend
+            if (existingUser.name === name) {
+                return res.status(409).json({
+                    status: "error",
+                    msg: "Username is already taken.",
+                    code: 1
+                });
+            }
+
+            if (existingUser.email === email) {
+                return res.status(409).json({
+                    status: "error",
+                    msg: "Email is already in use.",
+                    code: 2
+                });
+            }
         }
 
         // generate a hashed password
@@ -56,13 +71,15 @@ export async function signup(req: Request, res: Response){
             user:{
                 id: createdUser.rows[0].id,
                 name: createdUser.rows[0].name,
-            }
-            
+            },
+            code: 3,
         })
     }catch(err: unknown){
+        console.log(err)
         return res.status(500).json({
             status: 'error',
             msg: 'Internal server error',
+            code: 4
         })
     }
 }
@@ -92,6 +109,7 @@ export async function login(req:Request, res: Response){
             return res.status(401).json({
                 status:'error',
                 msg:'Invalid username or password',
+                code:2
             })
         }
 
@@ -103,13 +121,15 @@ export async function login(req:Request, res: Response){
             user:{
                 id: user.rows[0].id,
                 name: user.rows[0].name,
-            }
+            },
+            code:1
         })
 
     }catch(err: unknown){
         return res.status(500).json({
             status: 'error',
-            msg: 'Internal server error.'
+            msg: 'Internal server error.',
+            code: 3,
         });
     }
 }
@@ -148,12 +168,14 @@ export async function dashboard(req:Request, res:Response){
             username: user.name,
             email: user.email,
         },
+        code:1
         });
     } catch (error) {
 
         return res.status(500).json({
         status: "error",
         msg: "Unable to retrieve user",
+        code:2
         });
     }
 }
