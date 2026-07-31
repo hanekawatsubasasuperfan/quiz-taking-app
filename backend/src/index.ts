@@ -10,6 +10,7 @@ import {authRouter} from './routes/authRouter.js'
 import express from "express";
 import cookieParser from "cookie-parser";
 import { getUsers } from "./models/userModel.js";
+import { quizRouter } from "./routes/quizRoutes.js";
 
 
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
+app.use('/api/quiz', quizRouter);
 
 app.get('/', (req: Request, res: Response) => {
     return res.json({ msg: "this is the home page."});

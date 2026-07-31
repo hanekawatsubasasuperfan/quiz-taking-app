@@ -20,3 +20,4 @@ CREATE TABLE questions (
     quiz_id INT NOT NULL REFERENCES quizzes(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
