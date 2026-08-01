@@ -11,6 +11,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { getUsers } from "./models/userModel.js";
 import { quizRouter } from "./routes/quizRoutes.js";
+import { getAllQuizzes } from "./controllers/quizController.js";
 
 
 
@@ -39,5 +40,4 @@ app.get('/test',async (req: Request, res: Response) => {
 
 app.listen(process.env.PORT, async () => {
     console.log(`Server Started at port: ${process.env.PORT}`);
-    
 });

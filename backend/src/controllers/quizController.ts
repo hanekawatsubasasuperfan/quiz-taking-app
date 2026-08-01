@@ -2,6 +2,15 @@ import { validationResult } from 'express-validator';
 import {pool} from '../config/database.js'
 import type {Request, Response} from 'express'
 
+interface Question{
+    question:string
+    answer:string
+}
+interface Quiz{
+    title: string
+    questions: [Question]
+}   
+
 
 export async function createQuiz(req: Request, res: Response){
     const errors = validationResult(req);
@@ -34,5 +43,56 @@ export async function createQuiz(req: Request, res: Response){
             msg:"Internal Server Error",
             code:2
         })
+    }
+}
+
+export async function getAllQuizzes(req: Request, res: Response){
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+                status:'error',
+                msg: "Validation error nyan",
+            })
+    }
+
+    try{
+        const userID = req.user?.id;
+
+        const allQuizzes = await pool.query(
+            "SELECT title, user_id, id FROM quizzes WHERE user_id = $1",
+            [userID]
+        )
+
+        return res.status(200).json({
+            status:"success",
+            msg: allQuizzes.rows,
+            code:1
+        })
+    }catch(err){
+        console.log(err)
+    }
+}
+
+export async function getAllQuestionsForQuiz(req:Request, res: Response){
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+                status:'error',
+                msg: "Validation error nyan",
+            })
+    }
+
+    try{
+        const userID = req.user?.id;
+        const quizID = Number(req.params.quizId);
+
+        const questions = await pool.query(
+            "SELECT question, title FROM ",
+            []
+        )
+    }catch(err){
+        console.log(err)
     }
 }
