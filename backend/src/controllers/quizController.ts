@@ -70,29 +70,55 @@ export async function getAllQuizzes(req: Request, res: Response){
             code:1
         })
     }catch(err){
-        console.log(err)
+        return res.status(500).json({
+            status:"error",
+            msg:"Internal server error",
+            code:2
+        })
     }
 }
 
 export async function getAllQuestionsForQuiz(req:Request, res: Response){
-    const errors = validationResult(req)
-
-    if(!errors.isEmpty()){
-        return res.status(400).json({
-                status:'error',
-                msg: "Validation error nyan",
-            })
-    }
-
     try{
         const userID = req.user?.id;
-        const quizID = Number(req.params.quizId);
+        const quizID = Number(req.params.quizID);
 
         const questions = await pool.query(
-            "SELECT question, title FROM ",
-            []
+            "SELECT questions.question, questions.answer FROM questions JOIN quizzes ON questions.quiz_id = quizzes.id WHERE quizzes.id = $1 AND quizzes.user_id = $2",
+            [quizID, userID]
         )
+
+
+        return res.status(200).json({
+            status:"success",
+            questions: questions.rows,
+            code:1
+        })
     }catch(err){
         console.log(err)
+        return res.status(500).json({
+            status:"error",
+            msg:"Internal server error",
+            code:2
+        })
+    }
+}
+
+// function for the building the query that will perform bulk insert
+function buildBulkInsertQuery(query:string, questions:[Question]): string{
+    for(let i = 0; i < questions.length; i++){
+
+    }
+
+    return "";
+}
+export async function createQuestions(req: Request, res: Response){
+    try{
+        const quizID = Number(req.params.quizId);
+        const {questions} = req.body;
+
+        let query = "INSERT INTO questions VALUES (question, answer, quiz_id)"
+    }catch(err){
+
     }
 }
