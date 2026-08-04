@@ -18,6 +18,7 @@ CREATE TABLE questions (
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     quiz_id INT NOT NULL REFERENCES quizzes(id),
+    position INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

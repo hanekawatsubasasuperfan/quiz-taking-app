@@ -105,20 +105,53 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
 }
 
 // function for the building the query that will perform bulk insert
-function buildBulkInsertQuery(query:string, questions:[Question]): string{
+function buildBulkInsertQuery(questions:[Question], quizID: number): string{
+    let query = "";
+    console.log(questions)
+    console.log(questions.length)
     for(let i = 0; i < questions.length; i++){
-
+        if(i+1<questions.length){
+            query = query.concat(" ", `(${questions[i]?.question}, ${questions[i]?.question}, ${quizID}),`)
+        }else{
+            query = query.concat(" ", `(${questions[i]?.question}, ${questions[i]?.question}, ${quizID})`)
+        }
+        
     }
-
-    return "";
+    console.log(query)
+    return query
 }
 export async function createQuestions(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const {questions} = req.body;
 
-        let query = "INSERT INTO questions VALUES (question, answer, quiz_id)"
-    }catch(err){
+        // check if user has permission to the quiz
+        const userID = req.user?.id
+        const quiz_userID = await pool.query(
+            "SELECT user_id FROM quizzes WHERE id=$1",
+            [quizID]
+        )
 
+        if(!(Number(quiz_userID.rows[0].user_id)===userID)){
+            return res.status(500).json({
+                status:"error",
+                msg: "You dont have permission to edit this quiz."
+            })
+        }
+
+        let query = "INSERT INTO questions (question, answer, quiz_id) VALUES"
+        // console.log(query.concat(buildBulkInsertQuery(questions, quizID)))
+        
+        const insert = await pool.query(query.concat(buildBulkInsertQuery(questions, quizID)));
+        return res.status(200).json({
+            status:"success"
+        })
+        
+
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({
+            status:"error"
+        })
     }
 }
