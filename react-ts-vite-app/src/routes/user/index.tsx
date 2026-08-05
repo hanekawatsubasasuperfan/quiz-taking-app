@@ -1,6 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import Index from '../../Components/UserPage'
 import authenticate from '../../api/authenticate'
+import getAllQuizzes from '../../api/quizzes';
 
 export const Route = createFileRoute('/user/')({
     // no need to use beforeLoad here so switched to just using loader
@@ -11,7 +12,8 @@ export const Route = createFileRoute('/user/')({
                 to:'/'
             })
         }
-        return res.user
+        const data = await getAllQuizzes();
+        return data;
     },
     component: Index,
 })

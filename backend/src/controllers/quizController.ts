@@ -66,7 +66,7 @@ export async function getAllQuizzes(req: Request, res: Response){
 
         return res.status(200).json({
             status:"success",
-            msg: allQuizzes.rows,
+            quizzes: allQuizzes.rows,
             code:1
         })
     }catch(err){

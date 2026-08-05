@@ -4,7 +4,7 @@ import authenticate from '../../api/authenticate';
 
 
 export const Route = createFileRoute('/user/quiz')({
-    beforeLoad:async ()=>{
+    loader:async ()=>{
             const auth = await authenticate();
             if(!auth){
                 throw redirect({

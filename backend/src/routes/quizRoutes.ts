@@ -6,6 +6,6 @@ import { Router } from 'express'
 export const quizRouter = Router();
 
 quizRouter.post('/create', authenticate, validateQuiz, createQuiz);
-quizRouter.get('/getAllQuizzes', authenticate, getAllQuizzes);
+quizRouter.get('/getall', authenticate, getAllQuizzes);
 quizRouter.get('/:quizID/questions', authenticate, getAllQuestionsForQuiz)
 quizRouter.post('/create/:quizId/questions', authenticate, createQuestions)

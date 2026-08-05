@@ -15,7 +15,7 @@ export const Wrapper = styled.div`
     background-color: rgb(255, 255, 255); */
     background-color: #E5E5F7;
     opacity: 0.8;
-    background: radial-gradient(circle, transparent 20%, #E5E5F7 20%, #E5E5F7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #E5E5F7 20%, #E5E5F7 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#444CF7 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #444CF7 2px, #E5E5F7 2px) -1px 0;
+    background: radial-gradient(circle, transparent 20%, #E5E5F7 20%, #E5E5F7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #E5E5F7 20%, #E5E5F7 80%, transparent 80%, transparent) 25px 25px, linear-gradient(pink 2px, transparent 2px) 0 -1px, linear-gradient(90deg, pink 2px, #E5E5F7 2px) -1px 0;
     background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
 `
 
