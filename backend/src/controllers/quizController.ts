@@ -104,27 +104,41 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
     }
 }
 
+//alternative option
 // function for the building the query that will perform bulk insert
-function buildBulkInsertQuery(questions:[Question], quizID: number): string{
-    let query = "";
-    console.log(questions)
-    console.log(questions.length)
-    for(let i = 0; i < questions.length; i++){
-        if(i+1<questions.length){
-            query = query.concat(" ", `(${questions[i]?.question}, ${questions[i]?.question}, ${quizID}),`)
-        }else{
-            query = query.concat(" ", `(${questions[i]?.question}, ${questions[i]?.question}, ${quizID})`)
-        }
-        
-    }
-    console.log(query)
-    return query
-}
+// function buildBulkInsertQuery(
+//         questions: Question[],
+//         quizID: number
+//     ): { query: string; values: (string | number)[] } {
+
+//     let query =
+//         "INSERT INTO questions (question, answer, quiz_id) VALUES ";
+
+//     const placeholders: string[] = [];
+//     const values: (string | number)[] = [];
+
+//     for (let i = 0; i < questions.length; i++) {
+//         const offset = i * 3;
+
+//         placeholders.push(
+//             `($${offset + 1}, $${offset + 2}, $${offset + 3})`
+//         );
+
+//         values.push(
+//             questions[i]!.question,
+//             questions[i]!.answer,
+//             quizID
+//         );
+//     }
+
+//     query += placeholders.join(", ");
+
+//     return { query, values };
+// }
 export async function createQuestions(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const {questions} = req.body;
-
         // check if user has permission to the quiz
         const userID = req.user?.id
         const quiz_userID = await pool.query(
@@ -139,14 +153,23 @@ export async function createQuestions(req: Request, res: Response){
             })
         }
 
-        let query = "INSERT INTO questions (question, answer, quiz_id) VALUES"
-        // console.log(query.concat(buildBulkInsertQuery(questions, quizID)))
-        
-        const insert = await pool.query(query.concat(buildBulkInsertQuery(questions, quizID)));
+        const questionTexts = questions.map((q: Question) => q.question);
+        const answers = questions.map((q: Question) => q.answer);
+
+        await pool.query(
+            `INSERT INTO questions (question, answer, quiz_id)
+            SELECT question, answer, $3
+            FROM UNNEST($1::text[], $2::text[])
+            AS t(question, answer)`,
+            [
+                questionTexts,
+                answers,
+                quizID
+            ]
+        );
         return res.status(200).json({
             status:"success"
         })
-        
 
     }catch(err){
         console.log(err)
