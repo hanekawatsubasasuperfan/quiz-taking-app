@@ -1,20 +1,39 @@
 import { getRouteApi } from '@tanstack/react-router';
+import { QuizBox, Wrapper } from './index.styles';
+
 
 export default function index() {
   const routeApi = getRouteApi('/user/');
   const data = routeApi.useLoaderData();
+  console.log(data)
   return (
-    <div>
-      <h1>
-        {data.status}
-      </h1>
-      <h1>
-        {data.code}
-      </h1>
-      <h1>
+    <Wrapper>
 
-      </h1>
-      
-      </div>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+      <QuizBox/>
+
+    </Wrapper>
   )
 }

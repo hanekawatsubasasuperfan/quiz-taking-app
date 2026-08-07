@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import Index from '../../Components/UserPage'
 import authenticate from '../../api/authenticate'
-import getAllQuizzes from '../../api/quizzes';
+import getAllQuizzes from '../../api/quiz/quizzes';
 
 export const Route = createFileRoute('/user/')({
     // no need to use beforeLoad here so switched to just using loader

@@ -20,7 +20,7 @@ import {
     ActionRow,
     DeleteButton,
   SaveQuestionButton,
-} from "./quizModification.styles";
+} from "./index.styles";
 
 interface Question {
     id: number;
