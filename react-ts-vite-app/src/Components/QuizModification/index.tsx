@@ -19,7 +19,7 @@ import {
     TextArea,
     ActionRow,
     DeleteButton,
-  SaveQuestionButton,
+    SaveQuestionButton,
 } from "./index.styles";
 
 interface Question {

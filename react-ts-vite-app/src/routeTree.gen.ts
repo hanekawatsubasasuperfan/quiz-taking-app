@@ -13,7 +13,8 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UserIndexRouteImport } from './routes/user/index'
-import { Route as UserQuizModificationRouteImport } from './routes/user/quizModification'
+import { Route as UserTakeQuizRouteImport } from './routes/user/takeQuiz'
+import { Route as UserQuizModificationpostIDRouteImport } from './routes/user/quizModification$postID'
 import { Route as UserQuizRouteImport } from './routes/user/quiz'
 
 const SignupRoute = SignupRouteImport.update({
@@ -36,11 +37,17 @@ const UserIndexRoute = UserIndexRouteImport.update({
   path: '/user/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserQuizModificationRoute = UserQuizModificationRouteImport.update({
-  id: '/user/quizModification',
-  path: '/user/quizModification',
+const UserTakeQuizRoute = UserTakeQuizRouteImport.update({
+  id: '/user/takeQuiz',
+  path: '/user/takeQuiz',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserQuizModificationpostIDRoute =
+  UserQuizModificationpostIDRouteImport.update({
+    id: '/user/quizModification$postID',
+    path: '/user/quizModification$postID',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const UserQuizRoute = UserQuizRouteImport.update({
   id: '/user/quiz',
   path: '/user/quiz',
@@ -52,7 +59,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/user/quiz': typeof UserQuizRoute
-  '/user/quizModification': typeof UserQuizModificationRoute
+  '/user/quizModification$postID': typeof UserQuizModificationpostIDRoute
+  '/user/takeQuiz': typeof UserTakeQuizRoute
   '/user/': typeof UserIndexRoute
 }
 export interface FileRoutesByTo {
@@ -60,7 +68,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/user/quiz': typeof UserQuizRoute
-  '/user/quizModification': typeof UserQuizModificationRoute
+  '/user/quizModification$postID': typeof UserQuizModificationpostIDRoute
+  '/user/takeQuiz': typeof UserTakeQuizRoute
   '/user': typeof UserIndexRoute
 }
 export interface FileRoutesById {
@@ -69,7 +78,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/user/quiz': typeof UserQuizRoute
-  '/user/quizModification': typeof UserQuizModificationRoute
+  '/user/quizModification$postID': typeof UserQuizModificationpostIDRoute
+  '/user/takeQuiz': typeof UserTakeQuizRoute
   '/user/': typeof UserIndexRoute
 }
 export interface FileRouteTypes {
@@ -79,7 +89,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/user/quiz'
-    | '/user/quizModification'
+    | '/user/quizModification$postID'
+    | '/user/takeQuiz'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -87,7 +98,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/user/quiz'
-    | '/user/quizModification'
+    | '/user/quizModification$postID'
+    | '/user/takeQuiz'
     | '/user'
   id:
     | '__root__'
@@ -95,7 +107,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/user/quiz'
-    | '/user/quizModification'
+    | '/user/quizModification$postID'
+    | '/user/takeQuiz'
     | '/user/'
   fileRoutesById: FileRoutesById
 }
@@ -104,7 +117,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   UserQuizRoute: typeof UserQuizRoute
-  UserQuizModificationRoute: typeof UserQuizModificationRoute
+  UserQuizModificationpostIDRoute: typeof UserQuizModificationpostIDRoute
+  UserTakeQuizRoute: typeof UserTakeQuizRoute
   UserIndexRoute: typeof UserIndexRoute
 }
 
@@ -138,11 +152,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/quizModification': {
-      id: '/user/quizModification'
-      path: '/user/quizModification'
-      fullPath: '/user/quizModification'
-      preLoaderRoute: typeof UserQuizModificationRouteImport
+    '/user/takeQuiz': {
+      id: '/user/takeQuiz'
+      path: '/user/takeQuiz'
+      fullPath: '/user/takeQuiz'
+      preLoaderRoute: typeof UserTakeQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/quizModification$postID': {
+      id: '/user/quizModification$postID'
+      path: '/user/quizModification$postID'
+      fullPath: '/user/quizModification$postID'
+      preLoaderRoute: typeof UserQuizModificationpostIDRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/user/quiz': {
@@ -160,7 +181,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   UserQuizRoute: UserQuizRoute,
-  UserQuizModificationRoute: UserQuizModificationRoute,
+  UserQuizModificationpostIDRoute: UserQuizModificationpostIDRoute,
+  UserTakeQuizRoute: UserTakeQuizRoute,
   UserIndexRoute: UserIndexRoute,
 }
 export const routeTree = rootRouteImport
