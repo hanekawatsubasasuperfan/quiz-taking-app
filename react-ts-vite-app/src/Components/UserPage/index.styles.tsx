@@ -17,5 +17,10 @@ export const QuizBox = styled.div`
 
     background-color: #b1aebb;
     border-radius: 20px;
+    color: #35245f;
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
