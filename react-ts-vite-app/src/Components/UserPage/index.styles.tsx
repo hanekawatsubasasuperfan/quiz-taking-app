@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
 
 export const QuizBox = styled.div`
     aspect-ratio: 1 / 1;
-
+    cursor:pointer;
     background-color: #b1aebb;
     border-radius: 20px;
     color: #35245f;

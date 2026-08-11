@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 
 import {
   Wrapper,
@@ -43,6 +44,8 @@ export default function Quiz() {
   const [grade, setGrade] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [index, setIndex] = useState(0);
+  const route = getRouteApi('/quiz/takeQuiz/$quizID')
+  const data = route.useLoaderData();
 
   const len_questions = questions.length;
   const question = questions[index].question;

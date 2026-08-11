@@ -17,7 +17,6 @@ export default async function getAllQuizzes(): Promise<GetAllQuizResult>{
         });
 
     const data = await response.json();
-    console.log(data)
 
     return {status: data.status, code: data.code, quizzes: data.quizzes}
 

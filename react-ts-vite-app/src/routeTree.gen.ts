@@ -13,9 +13,9 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UserIndexRouteImport } from './routes/user/index'
-import { Route as UserTakeQuizRouteImport } from './routes/user/takeQuiz'
-import { Route as UserQuizModificationpostIDRouteImport } from './routes/user/quizModification$postID'
-import { Route as UserQuizRouteImport } from './routes/user/quiz'
+import { Route as QuizQuizIDRouteImport } from './routes/quiz/$quizID'
+import { Route as QuizTakeQuizQuizIDRouteImport } from './routes/quiz/takeQuiz/$quizID'
+import { Route as QuizQuizModificationQuizIDRouteImport } from './routes/quiz/quizModification/$quizID'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -37,50 +37,50 @@ const UserIndexRoute = UserIndexRouteImport.update({
   path: '/user/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserTakeQuizRoute = UserTakeQuizRouteImport.update({
-  id: '/user/takeQuiz',
-  path: '/user/takeQuiz',
+const QuizQuizIDRoute = QuizQuizIDRouteImport.update({
+  id: '/quiz/$quizID',
+  path: '/quiz/$quizID',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserQuizModificationpostIDRoute =
-  UserQuizModificationpostIDRouteImport.update({
-    id: '/user/quizModification$postID',
-    path: '/user/quizModification$postID',
+const QuizTakeQuizQuizIDRoute = QuizTakeQuizQuizIDRouteImport.update({
+  id: '/quiz/takeQuiz/$quizID',
+  path: '/quiz/takeQuiz/$quizID',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizQuizModificationQuizIDRoute =
+  QuizQuizModificationQuizIDRouteImport.update({
+    id: '/quiz/quizModification/$quizID',
+    path: '/quiz/quizModification/$quizID',
     getParentRoute: () => rootRouteImport,
   } as any)
-const UserQuizRoute = UserQuizRouteImport.update({
-  id: '/user/quiz',
-  path: '/user/quiz',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/user/quiz': typeof UserQuizRoute
-  '/user/quizModification$postID': typeof UserQuizModificationpostIDRoute
-  '/user/takeQuiz': typeof UserTakeQuizRoute
+  '/quiz/$quizID': typeof QuizQuizIDRoute
   '/user/': typeof UserIndexRoute
+  '/quiz/quizModification/$quizID': typeof QuizQuizModificationQuizIDRoute
+  '/quiz/takeQuiz/$quizID': typeof QuizTakeQuizQuizIDRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/user/quiz': typeof UserQuizRoute
-  '/user/quizModification$postID': typeof UserQuizModificationpostIDRoute
-  '/user/takeQuiz': typeof UserTakeQuizRoute
+  '/quiz/$quizID': typeof QuizQuizIDRoute
   '/user': typeof UserIndexRoute
+  '/quiz/quizModification/$quizID': typeof QuizQuizModificationQuizIDRoute
+  '/quiz/takeQuiz/$quizID': typeof QuizTakeQuizQuizIDRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/user/quiz': typeof UserQuizRoute
-  '/user/quizModification$postID': typeof UserQuizModificationpostIDRoute
-  '/user/takeQuiz': typeof UserTakeQuizRoute
+  '/quiz/$quizID': typeof QuizQuizIDRoute
   '/user/': typeof UserIndexRoute
+  '/quiz/quizModification/$quizID': typeof QuizQuizModificationQuizIDRoute
+  '/quiz/takeQuiz/$quizID': typeof QuizTakeQuizQuizIDRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,38 +88,38 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
-    | '/user/quiz'
-    | '/user/quizModification$postID'
-    | '/user/takeQuiz'
+    | '/quiz/$quizID'
     | '/user/'
+    | '/quiz/quizModification/$quizID'
+    | '/quiz/takeQuiz/$quizID'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
-    | '/user/quiz'
-    | '/user/quizModification$postID'
-    | '/user/takeQuiz'
+    | '/quiz/$quizID'
     | '/user'
+    | '/quiz/quizModification/$quizID'
+    | '/quiz/takeQuiz/$quizID'
   id:
     | '__root__'
     | '/'
     | '/login'
     | '/signup'
-    | '/user/quiz'
-    | '/user/quizModification$postID'
-    | '/user/takeQuiz'
+    | '/quiz/$quizID'
     | '/user/'
+    | '/quiz/quizModification/$quizID'
+    | '/quiz/takeQuiz/$quizID'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
-  UserQuizRoute: typeof UserQuizRoute
-  UserQuizModificationpostIDRoute: typeof UserQuizModificationpostIDRoute
-  UserTakeQuizRoute: typeof UserTakeQuizRoute
+  QuizQuizIDRoute: typeof QuizQuizIDRoute
   UserIndexRoute: typeof UserIndexRoute
+  QuizQuizModificationQuizIDRoute: typeof QuizQuizModificationQuizIDRoute
+  QuizTakeQuizQuizIDRoute: typeof QuizTakeQuizQuizIDRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,25 +152,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/takeQuiz': {
-      id: '/user/takeQuiz'
-      path: '/user/takeQuiz'
-      fullPath: '/user/takeQuiz'
-      preLoaderRoute: typeof UserTakeQuizRouteImport
+    '/quiz/$quizID': {
+      id: '/quiz/$quizID'
+      path: '/quiz/$quizID'
+      fullPath: '/quiz/$quizID'
+      preLoaderRoute: typeof QuizQuizIDRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/quizModification$postID': {
-      id: '/user/quizModification$postID'
-      path: '/user/quizModification$postID'
-      fullPath: '/user/quizModification$postID'
-      preLoaderRoute: typeof UserQuizModificationpostIDRouteImport
+    '/quiz/takeQuiz/$quizID': {
+      id: '/quiz/takeQuiz/$quizID'
+      path: '/quiz/takeQuiz/$quizID'
+      fullPath: '/quiz/takeQuiz/$quizID'
+      preLoaderRoute: typeof QuizTakeQuizQuizIDRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/quiz': {
-      id: '/user/quiz'
-      path: '/user/quiz'
-      fullPath: '/user/quiz'
-      preLoaderRoute: typeof UserQuizRouteImport
+    '/quiz/quizModification/$quizID': {
+      id: '/quiz/quizModification/$quizID'
+      path: '/quiz/quizModification/$quizID'
+      fullPath: '/quiz/quizModification/$quizID'
+      preLoaderRoute: typeof QuizQuizModificationQuizIDRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -180,10 +180,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
-  UserQuizRoute: UserQuizRoute,
-  UserQuizModificationpostIDRoute: UserQuizModificationpostIDRoute,
-  UserTakeQuizRoute: UserTakeQuizRoute,
+  QuizQuizIDRoute: QuizQuizIDRoute,
   UserIndexRoute: UserIndexRoute,
+  QuizQuizModificationQuizIDRoute: QuizQuizModificationQuizIDRoute,
+  QuizTakeQuizQuizIDRoute: QuizTakeQuizQuizIDRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
