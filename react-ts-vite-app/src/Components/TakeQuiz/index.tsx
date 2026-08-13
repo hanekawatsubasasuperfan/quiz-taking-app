@@ -16,29 +16,29 @@ import {
   Button,
 } from "./index.styles";
 
-interface Data {
-  question: string;
-  answer: string;
-  index: number;
-}
+// interface Data {
+//   question: string;
+//   answer: string;
+//   index: number;
+// }
 
-const questions: Data[] = [
-  {
-    question: "What is the capital of France?",
-    answer: "Paris",
-    index: 0,
-  },
-  {
-    question: "What is the capital of China?",
-    answer: "Beijing",
-    index: 1,
-  },
-  {
-    question: "What is the capital of Canada?",
-    answer: "Ottawa",
-    index: 2,
-  },
-];
+// const questions: Data[] = [
+//   {
+//     question: "What is the capital of France?",
+//     answer: "Paris",
+//     index: 0,
+//   },
+//   {
+//     question: "What is the capital of China?",
+//     answer: "Beijing",
+//     index: 1,
+//   },
+//   {
+//     question: "What is the capital of Canada?",
+//     answer: "Ottawa",
+//     index: 2,
+//   },
+// ];
 
 export default function Quiz() {
   const [grade, setGrade] = useState(0);
@@ -46,7 +46,7 @@ export default function Quiz() {
   const [index, setIndex] = useState(0);
   const route = getRouteApi('/quiz/takeQuiz/$quizID')
   const data = route.useLoaderData();
-
+  const questions = data.questions;
   const len_questions = questions.length;
   const question = questions[index].question;
   const answer = questions[index].answer;
