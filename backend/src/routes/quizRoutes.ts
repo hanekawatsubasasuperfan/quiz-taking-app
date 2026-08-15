@@ -1,4 +1,4 @@
-import {createQuiz, getAllQuizzes, getAllQuestionsForQuiz, createQuestions}  from '../controllers/quizController.js'
+import {createQuiz, getAllQuizzes, getAllQuestionsForQuiz, createQuestions, modifyQuestion}  from '../controllers/quizController.js'
 import {authenticate} from '../middleware/authenticate.js'
 import { validateQuiz } from '../middleware/quizValidaton.js'
 import { Router } from 'express'
@@ -9,3 +9,4 @@ quizRouter.post('/create', authenticate, validateQuiz, createQuiz);
 quizRouter.get('/getall', authenticate, getAllQuizzes);
 quizRouter.get('/:quizID/questions', authenticate, getAllQuestionsForQuiz)
 quizRouter.post('/create/:quizId/questions', authenticate, createQuestions)
+quizRouter.patch('/modify/quiz/:quizId', authenticate, modifyQuestion)

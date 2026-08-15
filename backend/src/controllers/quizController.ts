@@ -5,6 +5,7 @@ import type {Request, Response} from 'express'
 interface Question{
     question:string
     answer:string
+    id: number
 }
 interface Quiz{
     title: string
@@ -84,7 +85,7 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
         const quizID = Number(req.params.quizID);
 
         const questions = await pool.query(
-            "SELECT questions.question, questions.answer FROM questions JOIN quizzes ON questions.quiz_id = quizzes.id WHERE quizzes.id = $1 AND quizzes.user_id = $2",
+            "SELECT questions.question, questions.answer, questions.id FROM questions JOIN quizzes ON questions.quiz_id = quizzes.id WHERE quizzes.id = $1 AND quizzes.user_id = $2",
             [quizID, userID]
         )
 
@@ -95,7 +96,6 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
             code:1
         })
     }catch(err){
-        console.log(err)
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
@@ -172,9 +172,61 @@ export async function createQuestions(req: Request, res: Response){
         })
 
     }catch(err){
-        console.log(err)
         return res.status(500).json({
             status:"error"
         })
     }
+}
+
+async function BulkModifyQuestions(questions: Question[], quizID: number){
+    try{
+        await pool.query("BEGIN");
+        for(const question of questions){
+            await pool.query(
+                "UPDATE questions SET question = $1, answer = $2 WHERE id = $3 AND quiz_id = $4",
+                [question.question, question.answer, question.id, quizID]
+            )
+        }
+        await pool.query("COMMIT");
+    }catch(err){
+        await pool.query("ROLLBACK");
+    }
+}
+
+export async function modifyQuestion(req: Request, res: Response){
+    try{
+        const quizID = Number(req.params.quizId);
+        const questions = req.body;
+
+        // first check if user has permission to this quiz
+        const quizResult = await pool.query(
+        `
+            SELECT id
+            FROM quizzes
+            WHERE id = $1
+            AND user_id = $2
+            `,
+            [quizID, req.user?.id]
+        );
+
+        if (quizResult.rowCount === 0) {
+            return res.status(403).json({
+                msg: "You do not have permission to modify this quiz",
+                code:1
+        });}
+        
+        //then modify the question making sure that the quiz_id stored matches the quizID being sent
+        await BulkModifyQuestions(questions.questions, quizID)
+        return res.status(500).json({
+            msg:"Successfully updated all questions",
+            code:0
+        })
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({
+            msg:"Internal server error.",
+            code:2
+        })
+    }
+    
 }
