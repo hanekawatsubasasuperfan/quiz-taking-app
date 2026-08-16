@@ -18,13 +18,19 @@ export default function QuizOptions() {
         }))
     }
 
+    async function handleModifyQuiz(){
+        navigate(({
+            to:`/quiz/quizModification/${quizID}`
+        }))
+    }
+
     return (
         <Wrapper>
             <QuizActionCircle>
                 <TakeQuiz onClick={handleTakeQuiz}>
                     Take Quiz
                 </TakeQuiz>
-                <ModifyQuiz>
+                <ModifyQuiz onClick={handleModifyQuiz}>
                     Modify Quiz
                 </ModifyQuiz>
             </QuizActionCircle>

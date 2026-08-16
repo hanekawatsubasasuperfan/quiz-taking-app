@@ -14,7 +14,6 @@ export const Route = createFileRoute('/quiz/takeQuiz/$quizID')({
                 })
             }
             const data = await getAllQuestionsForQuiz(Number(params.quizID))
-            console.log(data)
             return data
         },
     component: Quiz,

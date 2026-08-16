@@ -9,4 +9,4 @@ quizRouter.post('/create', authenticate, validateQuiz, createQuiz);
 quizRouter.get('/getall', authenticate, getAllQuizzes);
 quizRouter.get('/:quizID/questions', authenticate, getAllQuestionsForQuiz)
 quizRouter.post('/create/:quizId/questions', authenticate, createQuestions)
-quizRouter.patch('/modify/quiz/:quizId', authenticate, modifyQuestion)
+quizRouter.patch('/modify/:quizId', authenticate, modifyQuestion)

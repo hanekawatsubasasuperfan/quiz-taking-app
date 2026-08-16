@@ -19,8 +19,9 @@ export async function createQuiz(req: Request, res: Response){
         // returns if error
         if(!errors.isEmpty()){
             return res.status(400).json({
-                status:'error',
-                msg: "Validation error nyan",
+                status:"error",
+                msg: "Validation error",
+                code:1
             })
         }
     
@@ -33,15 +34,15 @@ export async function createQuiz(req: Request, res: Response){
             [title, userID]
         )
 
-        return res.status(200).json({
-            status:"successs",
-            msg:"Quiz successfully created nyan",
-            code:1
+        return res.status(201).json({
+            status:"success",
+            msg:"Quiz successfully created",
+            code:0
         })
     }catch(err){
         return res.status(500).json({
             status:"error",
-            msg:"Internal Server Error",
+            msg:"Internal server error",
             code:2
         })
     }
@@ -52,9 +53,10 @@ export async function getAllQuizzes(req: Request, res: Response){
 
     if(!errors.isEmpty()){
         return res.status(400).json({
-                status:'error',
-                msg: "Validation error nyan",
-            })
+            status:"error",
+            msg:"Validation error",
+            code:1
+        })
     }
 
     try{
@@ -67,8 +69,9 @@ export async function getAllQuizzes(req: Request, res: Response){
 
         return res.status(200).json({
             status:"success",
+            msg:"Quizzes successfully retrieved",
             quizzes: allQuizzes.rows,
-            code:1
+            code:0
         })
     }catch(err){
         return res.status(500).json({
@@ -92,8 +95,9 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
 
         return res.status(200).json({
             status:"success",
+            msg:"Questions successfully retrieved",
             questions: questions.rows,
-            code:1
+            code:0
         })
     }catch(err){
         return res.status(500).json({
@@ -135,10 +139,12 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
 
 //     return { query, values };
 // }
+
 export async function createQuestions(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const {questions} = req.body;
+
         // check if user has permission to the quiz
         const userID = req.user?.id
         const quiz_userID = await pool.query(
@@ -147,9 +153,10 @@ export async function createQuestions(req: Request, res: Response){
         )
 
         if(!(Number(quiz_userID.rows[0].user_id)===userID)){
-            return res.status(500).json({
+            return res.status(403).json({
                 status:"error",
-                msg: "You dont have permission to edit this quiz."
+                msg:"You do not have permission to modify this quiz",
+                code:1
             })
         }
 
@@ -167,13 +174,18 @@ export async function createQuestions(req: Request, res: Response){
                 quizID
             ]
         );
-        return res.status(200).json({
-            status:"success"
+
+        return res.status(201).json({
+            status:"success",
+            msg:"Questions successfully created",
+            code:0
         })
 
     }catch(err){
         return res.status(500).json({
-            status:"error"
+            status:"error",
+            msg:"Internal server error",
+            code:2
         })
     }
 }
@@ -181,12 +193,14 @@ export async function createQuestions(req: Request, res: Response){
 async function BulkModifyQuestions(questions: Question[], quizID: number){
     try{
         await pool.query("BEGIN");
+
         for(const question of questions){
             await pool.query(
                 "UPDATE questions SET question = $1, answer = $2 WHERE id = $3 AND quiz_id = $4",
                 [question.question, question.answer, question.id, quizID]
             )
         }
+
         await pool.query("COMMIT");
     }catch(err){
         await pool.query("ROLLBACK");
@@ -197,7 +211,6 @@ export async function modifyQuestion(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const questions = req.body;
-
         // first check if user has permission to this quiz
         const quizResult = await pool.query(
         `
@@ -211,20 +224,25 @@ export async function modifyQuestion(req: Request, res: Response){
 
         if (quizResult.rowCount === 0) {
             return res.status(403).json({
-                msg: "You do not have permission to modify this quiz",
+                status:"error",
+                msg:"You do not have permission to modify this quiz",
                 code:1
-        });}
+            });
+        }
         
         //then modify the question making sure that the quiz_id stored matches the quizID being sent
         await BulkModifyQuestions(questions.questions, quizID)
-        return res.status(500).json({
-            msg:"Successfully updated all questions",
+
+        return res.status(200).json({
+            status:"success",
+            msg:"Questions successfully updated",
             code:0
         })
+
     }catch(err){
-        console.log(err)
         return res.status(500).json({
-            msg:"Internal server error.",
+            status:"error",
+            msg:"Internal server error",
             code:2
         })
     }

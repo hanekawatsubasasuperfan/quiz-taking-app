@@ -19,8 +19,9 @@ import {
     TextArea,
     ActionRow,
     DeleteButton,
-    SaveQuestionButton,
 } from "./index.styles";
+import { getRouteApi } from "@tanstack/react-router";
+import modifyQuiz from "../../api/quiz/modifyQuiz";
 
 interface Question {
     id: number;
@@ -29,21 +30,12 @@ interface Question {
 }
 
 export default function QuizModification() {
-    const [questions, setQuestions] = useState<Question[]>([
-    {
-        id: 1,
-        question: "What is the capital of France?",
-        answer: "Paris",
-    },
-    {
-        id: 2,
-        question: "What is the capital of Canada?",
-        answer: "Ottawa",
-    },
-    ]);
+    const route = getRouteApi('/quiz/quizModification/$quizID');
+    const data = route.useLoaderData()
+    const {quizID} = route.useParams();
 
+    const [questions, setQuestions] = useState<Question[]>(data.questions);
     const [selectedIndex, setSelectedIndex] = useState(0);
-
     const selectedQuestion = questions[selectedIndex];
 
     function handleQuestionChange(value: string) {
@@ -54,6 +46,11 @@ export default function QuizModification() {
             : question
         )
         );
+    }
+
+    async function handleModifyQuestionSubmit(){
+        const res = await modifyQuiz(Number(quizID), {questions: questions});
+        console.log(res);
     }
 
     function handleAnswerChange(value: string) {
@@ -75,7 +72,7 @@ export default function QuizModification() {
                 <QuizTitle>Geography Review</QuizTitle>
             </HeaderText>
 
-            <SaveQuizButton type="button">
+            <SaveQuizButton type="button" onClick={handleModifyQuestionSubmit}>
                 Save Changes
             </SaveQuizButton>
             </Header>
@@ -137,12 +134,9 @@ export default function QuizModification() {
 
             <ActionRow>
                 <DeleteButton type="button">
-                Delete
+                    Delete
                 </DeleteButton>
 
-                <SaveQuestionButton type="button">
-                Save Question
-                </SaveQuestionButton>
             </ActionRow>
             </EditorPanel>
         </EditorContainer>

@@ -1,6 +1,7 @@
 interface Question{
     question:string
     answer:string
+    id:number
 }
 
 interface GetAllQuestionsResult {
