@@ -46,10 +46,12 @@ export default function Quiz() {
   const [index, setIndex] = useState(0);
   const route = getRouteApi('/quiz/takeQuiz/$quizID')
   const data = route.useLoaderData();
-  const questions = data.questions;
+  const questions = data.questions.length == 0 ? [{question: "no questions yet", answer: "no answers yet", id:0}] : data.questions; // handling for cases when there are no questions yet
   const len_questions = questions.length;
   const question = questions[index].question;
   const answer = questions[index].answer;
+
+  console.log(data)
 
   function handleFlip() {
     setIsFlipped(!isFlipped);
@@ -127,11 +129,16 @@ export default function Quiz() {
           <Button
             $variant="correct"
             onClick={handleMark}
+              disabled = {data.questions.length == 0}
+
           >
             ✓
           </Button>
 
-          <Button $variant="wrong">
+          <Button 
+              $variant="wrong" 
+              disabled = {data.questions.length == 0}
+          >
             ✕
           </Button>
 
@@ -139,6 +146,7 @@ export default function Quiz() {
             <Button
               $variant="primary"
               onClick={handleSubmit}
+              disabled = {data.questions.length == 0}
             >
               Submit
             </Button>
