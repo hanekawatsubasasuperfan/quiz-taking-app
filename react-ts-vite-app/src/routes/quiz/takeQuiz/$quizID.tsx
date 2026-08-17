@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import Quiz from '../../../Components/TakeQuiz';
-import authenticate from '../../../api/authenticate';
+import authenticate from '../../../api/auth/authenticate';
 import getAllQuestionsForQuiz from '../../../api/quiz/questions';
 
 

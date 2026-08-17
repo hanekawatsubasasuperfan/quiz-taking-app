@@ -51,8 +51,6 @@ export default function Quiz() {
   const question = questions[index].question;
   const answer = questions[index].answer;
 
-  console.log(data)
-
   function handleFlip() {
     setIsFlipped(!isFlipped);
   }

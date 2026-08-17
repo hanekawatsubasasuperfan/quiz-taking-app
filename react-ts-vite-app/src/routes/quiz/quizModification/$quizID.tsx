@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import QuizModification from '../../../Components/QuizModification'
-import authenticate from '../../../api/authenticate';
+import authenticate from '../../../api/auth/authenticate';
 import getAllQuestionsForQuiz from '../../../api/quiz/questions';
 
 export const Route = createFileRoute('/quiz/quizModification/$quizID')({

@@ -10,7 +10,6 @@ export default function QuizOptions() {
     const route = getRouteApi('/quiz/$quizID');
     const {quizID} = route.useLoaderData();
     const navigate = useNavigate();
-    console.log(quizID)
 
     async function handleTakeQuiz(){
         navigate(({

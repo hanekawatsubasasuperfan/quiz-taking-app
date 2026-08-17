@@ -49,8 +49,8 @@ export default function QuizModification() {
     }
 
     async function handleModifyQuestionSubmit(){
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const res = await modifyQuiz(Number(quizID), {questions: questions});
-        console.log(res);
     }
 
     function handleAnswerChange(value: string) {

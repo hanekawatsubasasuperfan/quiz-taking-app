@@ -178,15 +178,23 @@ export async function dashboard(req:Request, res:Response){
     }
 }
 
-export  async function logout(req: Request, res: Response){
-    res.clearCookie("token",{
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax"
-    })
-
-    return res.status(200).json({
-        status: "success",
-        msg: "Logged out successfully",
-    });
+export async function logout(req: Request, res: Response){
+    try{
+            res.clearCookie("token",{
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax"
+        })
+        return res.status(200).json({
+            code:0,
+            status: "success",
+            msg: "Logged out successfully",
+        });
+    }catch(err){
+        return res.status(500).json({
+            status: "error",
+            msg: "Internal server error",
+            code: 2
+        })
+    }
 }
