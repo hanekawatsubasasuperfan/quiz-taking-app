@@ -200,7 +200,6 @@ async function BulkModifyQuestions(questions: Question[], quizID: number){
                 [question.question, question.answer, question.id, quizID]
             )
         }
-
         await pool.query("COMMIT");
     }catch(err){
         await pool.query("ROLLBACK");
@@ -247,4 +246,60 @@ export async function modifyQuestion(req: Request, res: Response){
         })
     }
     
+}
+
+async function BulkDeleteQuestions(questionIDs: Number[], quizID: number) {
+    try{
+        await pool.query("BEGIN");
+        for(const id of questionIDs){
+            await pool.query(
+                "DELETE FROM questions WHERE id = $1 AND quiz_id = $2",
+                [id, quizID]
+            )
+        }
+        await pool.query("COMMIT");
+    }catch(err){
+        await pool.query("ROLLBACK");
+    }
+    
+}
+
+export async function deleteQuestion(req: Request, res: Response){
+    try{
+        const quizID = Number(req.params.quizId);
+        const body = req.body;
+        // first check if user has permission to this quiz
+        // console.log(quizID)
+        // console.log(body.questionIDs)
+        const quizResult = await pool.query(
+        `
+            SELECT id
+            FROM quizzes
+            WHERE id = $1
+            AND user_id = $2
+            `,
+            [quizID, req.user?.id]
+        );
+
+        if (quizResult.rowCount === 0) {
+            return res.status(403).json({
+                status:"error",
+                msg:"You do not have permission to modify this quiz",
+                code:1
+            });
+        }
+        await BulkDeleteQuestions(body.questionIDs, quizID);
+
+        return res.status(200).json({
+            status:"success",
+            msg:"Successfully deleted question(s).",
+            code:1
+        })
+    }catch(err){
+        return res.status(500).json({
+            status:"error",
+            msg:"Internal server error",
+            code:2
+        })
+    }
 }
