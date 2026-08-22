@@ -22,6 +22,7 @@ import {
 } from "./index.styles";
 import { getRouteApi } from "@tanstack/react-router";
 import modifyQuiz from "../../api/quiz/modifyQuiz";
+import { DeleteQuestionFromQuiz } from "../../api/quiz/deleteQuestionFromQuiz";
 
 interface Question {
     id: number;
@@ -48,9 +49,31 @@ export default function QuizModification() {
         );
     }
 
+    async function handleDeleteQuestion(){
+        try{
+            const data = await DeleteQuestionFromQuiz(selectedQuestion.id, Number(quizID));
+            if(data.code==0){
+                setQuestions(prev =>
+                prev.filter(question => question.id !== selectedIndex)
+                );
+                if(selectedIndex + 1 < questions.length){
+                    setSelectedIndex(selectedIndex+1)
+                }else if(selectedIndex - 1 >= 0){
+                    setSelectedIndex(selectedIndex-1)
+                }else{
+                    // create UI for when there are no quizzes
+                }
+                alert("Successfully deleted quiz")
+            }else{
+                alert("Error occured. Please try again.")
+        }}catch(err){
+            console.log(err)
+        }
+        
+    }
+
     async function handleModifyQuestionSubmit(){
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const res = await modifyQuiz(Number(quizID), {questions: questions});
+        await modifyQuiz(Number(quizID), {questions: questions});
     }
 
     function handleAnswerChange(value: string) {
@@ -86,7 +109,7 @@ export default function QuizModification() {
                     key={question.id}
                     type="button"
                     $isSelected={index === selectedIndex}
-                    onClick={() => setSelectedIndex(index)}
+                    onClick={() => {setSelectedIndex(index)}}
                 >
                     <span>{index + 1}</span>
                     <p>{question.question}</p>
@@ -133,7 +156,7 @@ export default function QuizModification() {
             </FieldGroup>
 
             <ActionRow>
-                <DeleteButton type="button">
+                <DeleteButton type="button" onClick={handleDeleteQuestion}>
                     Delete
                 </DeleteButton>
 

@@ -268,6 +268,7 @@ export async function deleteQuestion(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const body = req.body;
+        console.log(body)
         // first check if user has permission to this quiz
         // console.log(quizID)
         // console.log(body.questionIDs)

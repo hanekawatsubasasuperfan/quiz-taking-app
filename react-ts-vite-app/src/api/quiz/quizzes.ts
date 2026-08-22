@@ -11,7 +11,7 @@ interface GetAllQuizResult{
 }
 
 export default async function getAllQuizzes(): Promise<GetAllQuizResult>{
-    const response = await fetch("http://localhost:8000/api/quiz/getall", {
+    const response = await fetch("http://localhost:8000/api/quiz", {
         credentials:"include", // makes sure cookies are stored
         method:"GET",
         });
