@@ -37,7 +37,10 @@ export default function QuizModification() {
 
     const [questions, setQuestions] = useState<Question[]>(data.questions);
     const [selectedIndex, setSelectedIndex] = useState(0);
+
     const selectedQuestion = questions[selectedIndex];
+    const [selectedQuestionID, setSelectedQuestionID] = useState(selectedQuestion.id);
+
 
     function handleQuestionChange(value: string) {
         setQuestions((currentQuestions) =>
@@ -52,24 +55,26 @@ export default function QuizModification() {
     async function handleDeleteQuestion(){
         try{
             const data = await DeleteQuestionFromQuiz(selectedQuestion.id, Number(quizID));
+            console.log(data)
             if(data.code==0){
                 setQuestions(prev =>
-                prev.filter(question => question.id !== selectedIndex)
+                    prev.filter(question => question.id !== selectedQuestionID)
                 );
                 if(selectedIndex + 1 < questions.length){
                     setSelectedIndex(selectedIndex+1)
+
                 }else if(selectedIndex - 1 >= 0){
                     setSelectedIndex(selectedIndex-1)
                 }else{
                     // create UI for when there are no quizzes
                 }
+                setSelectedQuestionID(selectedQuestion.id)
                 alert("Successfully deleted quiz")
             }else{
                 alert("Error occured. Please try again.")
         }}catch(err){
             console.log(err)
         }
-        
     }
 
     async function handleModifyQuestionSubmit(){
@@ -109,7 +114,7 @@ export default function QuizModification() {
                     key={question.id}
                     type="button"
                     $isSelected={index === selectedIndex}
-                    onClick={() => {setSelectedIndex(index)}}
+                    onClick={() => {setSelectedIndex(index);setSelectedQuestionID(question.id)}}
                 >
                     <span>{index + 1}</span>
                     <p>{question.question}</p>

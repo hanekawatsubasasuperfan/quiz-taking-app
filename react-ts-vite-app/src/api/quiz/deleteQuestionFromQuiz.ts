@@ -13,7 +13,7 @@ export async function DeleteQuestionFromQuiz(questionID: number, quizID: number)
                 "Content-Type": "application/json"
             },        
         body: JSON.stringify({
-            questionsIDs:[
+            questionIDs:[
                 questionID
             ]
         })

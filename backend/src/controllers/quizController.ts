@@ -252,6 +252,7 @@ async function BulkDeleteQuestions(questionIDs: Number[], quizID: number) {
     try{
         await pool.query("BEGIN");
         for(const id of questionIDs){
+            console.log(id)
             await pool.query(
                 "DELETE FROM questions WHERE id = $1 AND quiz_id = $2",
                 [id, quizID]
@@ -268,10 +269,11 @@ export async function deleteQuestion(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const body = req.body;
+        // console.log(quizID)
         console.log(body)
         // first check if user has permission to this quiz
         // console.log(quizID)
-        // console.log(body.questionIDs)
+        console.log(body.questionIDs)
         const quizResult = await pool.query(
         `
             SELECT id
@@ -294,9 +296,10 @@ export async function deleteQuestion(req: Request, res: Response){
         return res.status(200).json({
             status:"success",
             msg:"Successfully deleted question(s).",
-            code:1
+            code:0
         })
     }catch(err){
+        console.log(err)
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
