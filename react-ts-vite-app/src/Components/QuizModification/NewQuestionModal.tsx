@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, type ChangeEvent} from 'react';
 import Modal from './modal';
+import {Answer, CloseButton, Question, Submit, TopBar, Wrapper} from './NewQuestionModal.styles'
 
 export interface NewQuestionData{
     question: string;
@@ -49,13 +50,19 @@ export default function NewQuestionModal({
 
         return(
             <Modal
-                hasCloseBtn
+                hasCloseBtn = {false}
                 isOpen = {isOpen}
-                onClose={handleClose}
             >
-                <div>
-                    hi
-                </div>
+                <Wrapper>
+                    <TopBar>
+                        <CloseButton onClick = {handleClose}>
+                            X
+                        </CloseButton>
+                    </TopBar>
+                    <Question onChange={handleQuestionChange}/>
+                    <Answer onChange={handleAnswerChange}/>
+                    <Submit onClick={handleSubmit}/>
+                </Wrapper>
             </Modal>
         )
 }
