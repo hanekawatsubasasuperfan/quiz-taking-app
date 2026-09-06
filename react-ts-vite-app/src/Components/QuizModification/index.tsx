@@ -23,6 +23,7 @@ import {
 import { getRouteApi } from "@tanstack/react-router";
 import modifyQuiz from "../../api/quiz/modifyQuiz";
 import { DeleteQuestionFromQuiz } from "../../api/quiz/deleteQuestionFromQuiz";
+import NewQuestionModal from "./NewQuestionModal";
 
 interface Question {
     id: number;
@@ -37,6 +38,7 @@ export default function QuizModification() {
 
     const [questions, setQuestions] = useState<Question[]>(data.questions);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isNewQuestionModalOpen, setIsNewQuestionModalOpen] = useState<boolean>(false)
 
     const selectedQuestion = questions[selectedIndex];
     const [selectedQuestionID, setSelectedQuestionID] = useState(selectedQuestion.id);
@@ -91,6 +93,14 @@ export default function QuizModification() {
         );
     }
 
+    function handleOpenNewQuestionModal(){
+        setIsNewQuestionModalOpen(true)
+    }
+
+    function handleCloseNewQuestionModal(){
+        setIsNewQuestionModalOpen(false)
+    }
+
     return (
         <PageWrapper>
         <EditorContainer>
@@ -122,11 +132,15 @@ export default function QuizModification() {
                 ))}
             </QuestionList>
 
-            <AddQuestionButton type="button">
+            <AddQuestionButton type="button" onClick={handleOpenNewQuestionModal}>
                 + Add Question
             </AddQuestionButton>
             </Sidebar>
-
+            <NewQuestionModal 
+                isOpen = {isNewQuestionModalOpen}
+                onSubmit={()=>console.log("submit")}
+                onClose={handleCloseNewQuestionModal}
+            />
             <EditorPanel>
             <QuestionNumber>
                 Question {selectedIndex + 1}

@@ -1,4 +1,4 @@
-import { useRef, type ReactNode, useEffect } from "react"
+import { useRef, type ReactNode, useEffect, type KeyboardEvent, } from "react"
 
 interface ModalProps {
     isOpen: boolean;
@@ -8,7 +8,7 @@ interface ModalProps {
 }
 
 
-export default function Modal({children,isOpen}:ModalProps) {
+export default function Modal({children,isOpen, onClose, hasCloseBtn}:ModalProps) {
     const modalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(()=>{
@@ -22,11 +22,27 @@ export default function Modal({children,isOpen}:ModalProps) {
         }else{
             modal.close();
         }
-
     },[isOpen])
 
+    function handleClose(){
+            if(onClose) {
+                onClose();
+            }
+        }
+        
+        function handleKeyDown(e: KeyboardEvent<HTMLDialogElement>){
+            if(e.key == "Escape"){
+                handleClose();
+            }
+        }
+
     return(
-        <dialog ref={modalRef}>
+        <dialog ref = {modalRef} onKeyDown={handleKeyDown}>
+            {hasCloseBtn && (
+                <button onClick={handleClose}>
+                    Close
+                </button>
+            )}
             {children}
         </dialog>
     )

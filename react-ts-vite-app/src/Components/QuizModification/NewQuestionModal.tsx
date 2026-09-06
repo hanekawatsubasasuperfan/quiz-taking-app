@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { useState, useEffect, useRef, type ChangeEvent} from 'react';
 import Modal from './modal';
 
 export interface NewQuestionData{
@@ -15,7 +15,7 @@ interface NewQuestionModalProps{
 export default function NewQuestionModal({
     isOpen, 
     onClose, 
-    onSubmit
+    onSubmit,
     }:NewQuestionModalProps){
         const focusInputRef = useRef<HTMLInputElement>(null);
         const [question, setQuestion] = useState("")
@@ -40,14 +40,22 @@ export default function NewQuestionModal({
         function handleSubmit(){
             onSubmit({question, answer})
         }
-
+        
         function handleClose(){
-            onClose()
+            onClose();
         }
 
-        return(
-        <div>
+        
 
-        </div>
+        return(
+            <Modal
+                hasCloseBtn
+                isOpen = {isOpen}
+                onClose={handleClose}
+            >
+                <div>
+                    hi
+                </div>
+            </Modal>
         )
 }
