@@ -10,6 +10,10 @@ interface ModalProps {
 
 export default function Modal({children,isOpen, onClose, hasCloseBtn}:ModalProps) {
     const modalRef = useRef<HTMLDialogElement>(null);
+    const style = {
+        border:"3px solid pink",
+        // borderRadius:"16px"
+    }
 
     useEffect(()=>{
         const modal = modalRef.current;
@@ -37,7 +41,7 @@ export default function Modal({children,isOpen, onClose, hasCloseBtn}:ModalProps
         }
 
     return(
-        <dialog ref = {modalRef} onKeyDown={handleKeyDown}>
+        <dialog ref = {modalRef} onKeyDown={handleKeyDown} style={style}>
             {hasCloseBtn && (
                 <button onClick={handleClose}>
                     Close

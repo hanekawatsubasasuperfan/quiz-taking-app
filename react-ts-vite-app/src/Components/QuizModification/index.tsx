@@ -101,6 +101,22 @@ export default function QuizModification() {
         setIsNewQuestionModalOpen(false)
     }
 
+
+    /*
+    proposed flow for onSubmit for modal
+    if successful:
+        close modal for user
+        alert the user the question was successfully added
+        update ui to include the new question
+    if unsuccessful:
+        ?
+    */
+    function onSubmit():boolean{
+        console.log('submit')
+        return false;
+    }
+
+
     return (
         <PageWrapper>
         <EditorContainer>
@@ -138,7 +154,7 @@ export default function QuizModification() {
             </Sidebar>
             <NewQuestionModal 
                 isOpen = {isNewQuestionModalOpen}
-                onSubmit={()=>console.log("submit")}
+                onSubmit={onSubmit}
                 onClose={handleCloseNewQuestionModal}
             />
             <EditorPanel>

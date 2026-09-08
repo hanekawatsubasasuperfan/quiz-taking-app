@@ -140,6 +140,16 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
 //     return { query, values };
 // }
 
+
+/*
+example body
+"question":[
+        {
+            "question":"anime with the best cast of all time",
+            "answer":"monogatari"
+        }
+    ]
+*/
 export async function createQuestions(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);

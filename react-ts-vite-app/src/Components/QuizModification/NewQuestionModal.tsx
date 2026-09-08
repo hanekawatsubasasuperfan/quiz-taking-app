@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, type ChangeEvent} from 'react';
 import Modal from './modal';
-import {Answer, CloseButton, Question, Submit, TopBar, Wrapper} from './NewQuestionModal.styles'
+import {Answer, AnswerDiv, CloseButton, Question, QuestionDiv, Submit, TopBar, Wrapper} from './NewQuestionModal.styles'
 
 export interface NewQuestionData{
     question: string;
@@ -9,14 +9,13 @@ export interface NewQuestionData{
 
 interface NewQuestionModalProps{
     isOpen: boolean;
-    onSubmit: (data: NewQuestionData) => void;
+    onSubmit: (data?: NewQuestionData) => boolean;
     onClose: () => void;
 }
 
 export default function NewQuestionModal({
     isOpen, 
     onClose, 
-    onSubmit,
     }:NewQuestionModalProps){
         const focusInputRef = useRef<HTMLInputElement>(null);
         const [question, setQuestion] = useState("")
@@ -39,7 +38,8 @@ export default function NewQuestionModal({
         }   
 
         function handleSubmit(){
-            onSubmit({question, answer})
+            console.log(question)
+            console.log(answer)
         }
         
         function handleClose(){
@@ -59,9 +59,18 @@ export default function NewQuestionModal({
                             X
                         </CloseButton>
                     </TopBar>
-                    <Question onChange={handleQuestionChange}/>
-                    <Answer onChange={handleAnswerChange}/>
-                    <Submit onClick={handleSubmit}/>
+                    <QuestionDiv>
+                        Question
+                        <Question onChange={handleQuestionChange}/>
+                    </QuestionDiv>
+                    <AnswerDiv>
+                        Answer
+                        <Answer onChange={handleAnswerChange}/>
+                    </AnswerDiv>
+                    
+                    <Submit onClick={handleSubmit}>
+                        Submit
+                    </Submit>
                 </Wrapper>
             </Modal>
         )

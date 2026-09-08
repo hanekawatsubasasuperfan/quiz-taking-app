@@ -7,6 +7,16 @@ export const Wrapper = styled.div`
     width:20vw;
 `;
 
+export const QuestionDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+export const AnswerDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
 export const Question = styled.input`
     height: 3.5vh;
 `;
@@ -31,4 +41,6 @@ export const CloseButton = styled.div`
     font-size: 2rem;
 `;
 
-export const Submit = styled.button``;
+export const Submit = styled.button`
+    height: 4.5vh;
+`;
