@@ -154,6 +154,7 @@ export async function createQuestions(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const {questions} = req.body;
+        console.log(req.body)
 
         // check if user has permission to the quiz
         const userID = req.user?.id
@@ -192,6 +193,7 @@ export async function createQuestions(req: Request, res: Response){
         })
 
     }catch(err){
+        console.log(err)
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",

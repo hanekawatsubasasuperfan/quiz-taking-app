@@ -11,11 +11,13 @@ interface NewQuestionModalProps{
     isOpen: boolean;
     onSubmit: (data?: NewQuestionData) => boolean;
     onClose: () => void;
+    handleSubmit: (question: string, answer: string) => void;
 }
 
 export default function NewQuestionModal({
     isOpen, 
     onClose, 
+    handleSubmit
     }:NewQuestionModalProps){
         const focusInputRef = useRef<HTMLInputElement>(null);
         const [question, setQuestion] = useState("")
@@ -37,17 +39,11 @@ export default function NewQuestionModal({
             setAnswer(e.target.value)
         }   
 
-        function handleSubmit(){
-            console.log(question)
-            console.log(answer)
-        }
         
         function handleClose(){
             onClose();
         }
-
         
-
         return(
             <Modal
                 hasCloseBtn = {false}
@@ -68,7 +64,7 @@ export default function NewQuestionModal({
                         <Answer onChange={handleAnswerChange}/>
                     </AnswerDiv>
                     
-                    <Submit onClick={handleSubmit}>
+                    <Submit onClick={()=>{handleSubmit(question, answer)}}>
                         Submit
                     </Submit>
                 </Wrapper>

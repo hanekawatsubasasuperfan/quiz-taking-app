@@ -24,6 +24,7 @@ import { getRouteApi } from "@tanstack/react-router";
 import modifyQuiz from "../../api/quiz/modifyQuiz";
 import { DeleteQuestionFromQuiz } from "../../api/quiz/deleteQuestionFromQuiz";
 import NewQuestionModal from "./NewQuestionModal";
+import createQuestion from "../../api/quiz/createQuestion";
 
 interface Question {
     id: number;
@@ -112,8 +113,12 @@ export default function QuizModification() {
         ?
     */
     function onSubmit():boolean{
-        console.log('submit')
         return false;
+    }
+
+    async function handleSubmit(question: string, answer: string){
+        const res = await createQuestion({question, answer, quiz_id: selectedQuestion.id});
+        console.log(res);
     }
 
 
@@ -156,6 +161,7 @@ export default function QuizModification() {
                 isOpen = {isNewQuestionModalOpen}
                 onSubmit={onSubmit}
                 onClose={handleCloseNewQuestionModal}
+                handleSubmit={handleSubmit}
             />
             <EditorPanel>
             <QuestionNumber>

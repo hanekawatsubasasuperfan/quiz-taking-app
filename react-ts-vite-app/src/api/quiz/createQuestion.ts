@@ -1,7 +1,7 @@
 interface Question{
     question:string;
     answer:string;
-    quiz_id:number;
+    quiz_id: number;
 }
 
 interface CreateQuestionResult {
@@ -15,10 +15,13 @@ export default async function createQuestion(newQuestion: Question):Promise<Crea
         `http://localhost:8000/api/quiz/create/${newQuestion.quiz_id}/questions`,
         {
             credentials:"include",
-            method:"PATCH",
+            method:"POST",
+            headers:{
+                "Content-Type": "application/json"
+            },
             // has to stringifyed because request body is being sent through HTTP as raw data, not as a javascript object
             body:JSON.stringify({
-                question:[
+                questions:[
                     {
                         question: newQuestion.question,
                         answer: newQuestion.answer
