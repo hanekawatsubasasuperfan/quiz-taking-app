@@ -12,7 +12,7 @@ interface CreateQuestionResult {
 
 export default async function createQuestion(newQuestion: Question):Promise<CreateQuestionResult>{
     const response = await fetch(
-        `http://localhost:8000/api/quiz/create/${newQuestion.quiz_id}/questions`,
+        `/api/quiz/create/${newQuestion.quiz_id}/questions`,
         {
             credentials:"include",
             method:"POST",

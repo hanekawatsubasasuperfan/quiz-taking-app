@@ -6,7 +6,7 @@ interface Result{
 
 export async function DeleteQuestionFromQuiz(questionID: number, quizID: number): Promise<Result>{
 
-    const res = await fetch(`http://localhost:8000/api/quiz/delete/${quizID}`,{
+    const res = await fetch(`/api/quiz/delete/${quizID}`,{
         credentials:"include",
         method:"DELETE",
         headers: {

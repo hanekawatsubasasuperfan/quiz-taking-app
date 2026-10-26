@@ -9,6 +9,7 @@ import { routeTree } from './routeTree.gen'
 const router = createRouter({ routeTree })
 
 import './index.css'
+import { GlobalPalette } from './styles/GlobalPalette'
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
@@ -23,6 +24,7 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
+      <GlobalPalette />
       <RouterProvider router={router} />
     </StrictMode>,
   )

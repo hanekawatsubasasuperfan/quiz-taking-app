@@ -1,44 +1,42 @@
-import { useNavigate, Link, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Logout } from "../../api/auth/logout";
+import { useNavigate, Link, Outlet, useLocation } from '@tanstack/react-router';
+import { Logout } from '../../api/auth/logout';
 
-export default function RootComponent(){
-    const navigate = useNavigate();
+export default function RootComponent() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname === '/';
 
-    async function handleLogout(){
-        try{
-            const data = await Logout();
-            if(data.code == 2){
-                alert("Logout error, please try again");
-                return;
-            }
-            navigate({
-                to:"/login"
-            })
-        }catch(err){
-            console.error(err)
-        }
+  async function handleLogout() {
+    try {
+      const data = await Logout();
+      if (data.code === 2) {
+        alert('Could not sign out. Please try again.');
+        return;
+      }
+      await navigate({ to: '/login' });
+    } catch {
+      alert('Could not sign out. Please try again.');
     }
+  }
 
-    return (
-        <>
-        <div style={{
-            backgroundColor:"#2f2147", 
-            height:"65px",
-            display:"flex",
-            alignContent:"center"
-            }}>
-            <Link to="/user" style={{color:"white", marginLeft:"15px",  fontSize:"2em"}}>
-                Home
-            </Link>
-            <button style={{
-                color:"white", marginLeft:"15px",  fontSize:"2em",textDecoration:"underline", cursor:"pointer", background:"none", border:"none"
-                }} onClick={handleLogout} type="button">
-                Logout
-            </button>
-        </div>
-        <Outlet />
-        <TanStackRouterDevtools />
+  return (
+    <>
+      <header className="site-header">
+        <nav className="site-nav" aria-label="Main navigation">
+          {isAuthPage ? (
+            <>
+              <Link to="/login">Sign in</Link>
+              <Link to="/signup">Create account</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/user">My quizzes</Link>
+              <button className="text-button" onClick={handleLogout} type="button">Sign out</button>
+            </>
+          )}
+        </nav>
+      </header>
+      <Outlet />
     </>
-    )
-} 
+  );
+}

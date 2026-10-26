@@ -1,7 +1,6 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { 
   FormContainer, 
-  SignupText, 
   PasswordInput, 
   PasswordInputLabel, 
   UsernameInput, 
@@ -15,13 +14,18 @@ from "./index.styles";
 
 import { useState } from "react";
 import type {ChangeEvent, SubmitEvent} from 'react'
+import AuthHeading from "../AuthHeading";
+import submitAuth from "../../api/auth/submitAuth";
 
 export default function App(){
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   const navigate = useNavigate();
+  const router = useRouter();
 
   function handleChangeUsername(e: ChangeEvent<HTMLInputElement>){
     setUsername(e.target.value)
@@ -37,40 +41,25 @@ export default function App(){
 
   async function handleSubmit(e: SubmitEvent<HTMLFormElement>){
     e.preventDefault();
-    const response = await fetch("http://localhost:8000/api/auth/signup", {
-      credentials:"include", // makes sure cookies are stored
-      method:"POST",
-      body:JSON.stringify({ "name": username, "password": password, "email": email }),
-      headers:{
-        "Content-Type": "application/json",
-      }
-    });
-    const data = await response.json();
-    console.log(data)
-    if(data.code === 1){
-      alert("Username already exists meow!")
-    }
-    else if(data.code === 2){
-      alert("Email already exists meow!")
-    }
-    else if(data.code===3){
-      alert("Successful signup, redirecting to user page")
-      navigate({
-        to:"/user"
-      })
-    } 
-    else if(data.code===4){
-      alert("Internal server error, pleast try again nyan!")
+    if (pending) return;
+    setError("");
+    setPending(true);
+    try {
+      await submitAuth('signup', { name: username.trim(), email: email.trim(), password });
+      await router.invalidate();
+      await navigate({ to: '/user' });
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Could not create your account. Please try again.');
+    } finally {
+      setPending(false);
     }
   }
 
   return(
   <>
     <Wrapper>
-      <FormContainer onSubmit={handleSubmit}>
-        <SignupText>
-          Signup
-        </SignupText>
+      <FormContainer onSubmit={handleSubmit} aria-labelledby="sign-up-heading" aria-busy={pending}>
+        <AuthHeading id="sign-up-heading">Sign up</AuthHeading>
         <UsernameInputLabel htmlFor="username" >
           Username
         </UsernameInputLabel>
@@ -82,8 +71,11 @@ export default function App(){
         <PasswordInputLabel htmlFor="password">
           Password
         </PasswordInputLabel>
-        <PasswordInput id="password" value={password} onChange={handleChangePassword}/>
-        <Submit/>
+        <PasswordInput autoComplete="new-password" id="password" value={password} onChange={handleChangePassword}/>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <span className="sr-only" role="status">{pending ? 'Creating account…' : ''}</span>
+        <Submit value={pending ? "Creating account…" : "Sign up"} disabled={pending}/>
+        <p className="auth-note">Already have an account? <Link to="/login">Sign in</Link></p>
       </FormContainer>
     </Wrapper>
   </>)

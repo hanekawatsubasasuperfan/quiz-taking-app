@@ -1,6 +1,5 @@
 import { 
   FormContainer, 
-  LoginText, 
   PasswordInput, 
   PasswordInputLabel, 
   UsernameInput, 
@@ -12,13 +11,18 @@ from "./index.styles";
 
 import { useState } from "react";
 import type {ChangeEvent, SubmitEvent} from 'react'
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
+import AuthHeading from "../AuthHeading";
+import submitAuth from "../../api/auth/submitAuth";
 
 export default function App(){
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   const navigate = useNavigate();
+  const router = useRouter();
 
   function handleChangeUsername(e: ChangeEvent<HTMLInputElement>){
     setUsername(e.target.value)
@@ -30,26 +34,17 @@ export default function App(){
 
   async function handleSubmit(e: SubmitEvent<HTMLFormElement>){
     e.preventDefault();
-    const response = await fetch("http://localhost:8000/api/auth/login", {
-      credentials:"include",
-      method:"POST",
-      body:JSON.stringify({ "name": username, "password": password }),
-      headers:{
-        "Content-Type": "application/json",
-      }
-    });
-    const data = await response.json();
-    if(data.code===1){
-      alert("Successful login, redirecting to user page")
-      navigate(({
-        to:"/user"
-      }))
-    }
-    else if(data.code===2){
-      alert("User already exists, please try again meow!")
-    }
-    else if(data.code===3){
-      alert("Internal server error, pleast try again nyan!")
+    if (pending) return;
+    setError("");
+    setPending(true);
+    try {
+      await submitAuth('login', { name: username.trim(), password });
+      await router.invalidate();
+      await navigate({ to: '/user' });
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Could not sign in. Please try again.');
+    } finally {
+      setPending(false);
     }
       
   }
@@ -57,19 +52,20 @@ export default function App(){
   return(
   <>
     <Wrapper>
-      <FormContainer onSubmit={handleSubmit}>
-        <LoginText>
-          Login
-        </LoginText>
+      <FormContainer onSubmit={handleSubmit} aria-labelledby="sign-in-heading" aria-busy={pending}>
+        <AuthHeading id="sign-in-heading">Sign in</AuthHeading>
         <UsernameInputLabel htmlFor="username" >
           Username
         </UsernameInputLabel>
-        <UsernameInput id="username" value={username} onChange={handleChangeUsername}/>
+        <UsernameInput id="username" name="username" value={username} onChange={handleChangeUsername}/>
         <PasswordInputLabel htmlFor="password">
           Password
         </PasswordInputLabel>
-        <PasswordInput id="password" value={password} onChange={handleChangePassword}/>
-        <Submit/>
+        <PasswordInput id="password" name="password" value={password} onChange={handleChangePassword}/>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <span className="sr-only" role="status">{pending ? 'Signing in…' : ''}</span>
+        <Submit value={pending ? "Signing in…" : "Sign in"} disabled={pending}/>
+        <p className="auth-note">New here? <Link to="/signup">Create an account</Link></p>
       </FormContainer>
     </Wrapper>
   </>)

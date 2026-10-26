@@ -1,163 +1,77 @@
-import { useState } from "react";
-import { getRouteApi } from "@tanstack/react-router";
-
-import {
-  Wrapper,
-  QuizContainer,
-  FlipCard,
-  FlipInner,
-  FlipFront,
-  FlipBack,
-  CardTitle,
-  CardLabel,
-  FlipHint,
-  QuestionMeta,
-  ButtonGroup,
-  Button,
-} from "./index.styles";
-
-// interface Data {
-//   question: string;
-//   answer: string;
-//   index: number;
-// }
-
-// const questions: Data[] = [
-//   {
-//     question: "What is the capital of France?",
-//     answer: "Paris",
-//     index: 0,
-//   },
-//   {
-//     question: "What is the capital of China?",
-//     answer: "Beijing",
-//     index: 1,
-//   },
-//   {
-//     question: "What is the capital of Canada?",
-//     answer: "Ottawa",
-//     index: 2,
-//   },
-// ];
+import { useState } from 'react';
+import { getRouteApi, Link } from '@tanstack/react-router';
+import { Wrapper, QuizContainer, FlipCard, FlipInner, FlipFront, FlipBack, CardTitle, CardLabel, FlipHint, QuestionMeta, ButtonGroup, Button } from './index.styles';
 
 export default function Quiz() {
-  const [grade, setGrade] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [index, setIndex] = useState(0);
-  const route = getRouteApi('/quiz/takeQuiz/$quizID')
-  const data = route.useLoaderData();
-  const questions = data.questions.length == 0 ? [{question: "no questions yet", answer: "no answers yet", id:0}] : data.questions; // handling for cases when there are no questions yet
-  const len_questions = questions.length;
-  const question = questions[index].question;
-  const answer = questions[index].answer;
+  const [marks, setMarks] = useState<Record<number, boolean>>({});
+  const [finished, setFinished] = useState(false);
+  const route = getRouteApi('/quiz/takeQuiz/$quizID');
+  const { questions } = route.useLoaderData();
+  const { quizID } = route.useParams();
+  const question = questions[index];
+  const grade = Object.values(marks).filter(Boolean).length;
 
-  function handleFlip() {
-    setIsFlipped(!isFlipped);
-  }
-
-  function handleForward() {
-    if (index < len_questions - 1) {
-      setIndex(index + 1);
-      setIsFlipped(false);
-    }
-  }
-
-  function handleBackward() {
-    if (index > 0) {
-      setIndex(index - 1);
-      setIsFlipped(false);
-    }
-  }
-
-  function handleMark() {
-    setGrade(grade + 1);
-  }
-
-  function handleSubmit() {
-    let final_grade = grade / len_questions;
-
-    final_grade =
-      Math.round(final_grade * 10000) / 100;
-
-    alert(
-      `Final score ${grade}/${len_questions} or ${final_grade}%`,
-    );
+  function moveTo(next: number) {
+    setIndex(next);
+    setIsFlipped(false);
   }
 
   return (
     <Wrapper>
-      <QuizContainer>
-        <FlipCard onClick={handleFlip}>
-          <FlipInner $isFlipped={isFlipped}>
-            <FlipFront>
-              <CardTitle>{question}</CardTitle>
-
-              <CardLabel>Question</CardLabel>
-
-              <FlipHint>
-                Click to reveal answer
-              </FlipHint>
-            </FlipFront>
-
-            <FlipBack>
-              <CardTitle>{answer}</CardTitle>
-
-              <CardLabel>Answer</CardLabel>
-
-              <FlipHint>
-                Click to show question
-              </FlipHint>
-            </FlipBack>
-          </FlipInner>
-        </FlipCard>
-
-        <QuestionMeta>
-          Question {index + 1} / {len_questions}
-        </QuestionMeta>
-
-        <ButtonGroup>
-          <Button
-            $variant="outline"
-            onClick={handleBackward}
-            disabled={index === 0}
-          >
-            ←
-          </Button>
-
-          <Button
-            $variant="correct"
-            onClick={handleMark}
-              disabled = {data.questions.length == 0}
-
-          >
-            ✓
-          </Button>
-
-          <Button 
-              $variant="wrong" 
-              disabled = {data.questions.length == 0}
-          >
-            ✕
-          </Button>
-
-          {index === len_questions - 1 ? (
-            <Button
-              $variant="primary"
-              onClick={handleSubmit}
-              disabled = {data.questions.length == 0}
-            >
-              Submit
-            </Button>
+      <Link className="back-link" to="/quiz/$quizID" params={{ quizID }}>← Back to quiz</Link>
+      {!question ? (
+        <div className="empty-state">
+          <h1>No questions yet.</h1>
+          <p>Add a few questions to start practicing.</p>
+          <Link className="back-link" to="/quiz/quizModification/$quizID" params={{ quizID }}>Edit this quiz →</Link>
+        </div>
+      ) : (
+        <QuizContainer>
+          {finished ? (
+            <div className="result" role="status">
+              <p className="eyebrow">Session complete</p>
+              <h1 className="page-heading">That’s a wrap.</h1>
+              <p className="result-score">{Math.round(grade / questions.length * 100)}%</p>
+              <p className="page-description">{grade} of {questions.length} questions marked correct.</p>
+              <Button $variant="primary" onClick={() => { setMarks({}); moveTo(0); setFinished(false); }}>Practice again →</Button>
+            </div>
           ) : (
-            <Button
-              $variant="outline"
-              onClick={handleForward}
-            >
-              →
-            </Button>
+            <>
+              <div className="session-header">
+                <h1 className="eyebrow">Practice / Quiz {quizID}</h1>
+                <progress className="session-progress" value={index + 1} max={questions.length} aria-label="Quiz progress" />
+              </div>
+              <FlipCard onClick={() => setIsFlipped(!isFlipped)} aria-label={isFlipped ? 'Show question' : 'Reveal answer'} aria-pressed={isFlipped}>
+                <FlipInner $isFlipped={isFlipped}>
+                  <FlipFront aria-hidden={isFlipped}>
+                    <CardLabel>Question {String(index + 1).padStart(2, '0')}</CardLabel>
+                    <CardTitle>{question.question}</CardTitle>
+                    <FlipHint>Click or press Enter to reveal answer ↗</FlipHint>
+                  </FlipFront>
+                  <FlipBack aria-hidden={!isFlipped}>
+                    <CardLabel>Answer</CardLabel>
+                    <CardTitle>{question.answer}</CardTitle>
+                    <FlipHint>Click or press Enter to show question ↗</FlipHint>
+                  </FlipBack>
+                </FlipInner>
+              </FlipCard>
+              <QuestionMeta aria-live="polite">{index + 1} / {questions.length} — {marks[question.id] === undefined ? 'How did you do?' : marks[question.id] ? 'Marked correct' : 'Marked for review'}</QuestionMeta>
+              <ButtonGroup>
+                <Button $variant="outline" aria-label="Previous question" onClick={() => moveTo(index - 1)} disabled={index === 0}>←</Button>
+                <Button $variant="correct" $selected={marks[question.id] === true} aria-pressed={marks[question.id] === true} onClick={() => setMarks({ ...marks, [question.id]: true })}>✓ Got it</Button>
+                <Button $variant="wrong" $selected={marks[question.id] === false} aria-pressed={marks[question.id] === false} onClick={() => setMarks({ ...marks, [question.id]: false })}>× Review</Button>
+                {index === questions.length - 1 ? (
+                  <Button $variant="primary" onClick={() => setFinished(true)}>Finish →</Button>
+                ) : (
+                  <Button $variant="outline" aria-label="Next question" onClick={() => moveTo(index + 1)}>→</Button>
+                )}
+              </ButtonGroup>
+            </>
           )}
-        </ButtonGroup>
-      </QuizContainer>
+        </QuizContainer>
+      )}
     </Wrapper>
   );
 }

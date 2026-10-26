@@ -1,73 +1,38 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-export const Wrapper = styled.div`
-    // -65px to take into account the nav bar
-    min-height: calc(100dvh - 65px);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: #5f43b2;
-    `;
-
-export const QuizActionCircle = styled.div`
-    width: 55dvh;
-    height: 55dvh;
-
-    border-radius: 50%;
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-
-    box-shadow: 0 15px 35px rgba(47, 33, 71, 0.3);
-    `;
-
+export const Wrapper = styled.main`
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+`;
+export const ActionGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+  margin-top: 44px;
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+`;
 export const TakeQuiz = styled.button`
-    flex: 1;
-
-    border: none;
-
-    background: linear-gradient(
-        to bottom,
-        #c6a5ff,
-        #8064d8
-    );
-
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: filter 0.2s ease;
-
-    &:hover {
-        filter: brightness(1.08);
-    }
-    `;
-
-export const ModifyQuiz = styled.button`
-    flex: 1;
-
-    border: none;
-
-    background: linear-gradient(
-        to bottom,
-        #8064d8,
-        #493382
-    );
-
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: filter 0.2s ease;
-
-    &:hover {
-        filter: brightness(1.08);
-    }
-    `;
+  min-height: 240px;
+  padding: 30px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 36px;
+  text-align: left;
+  border: 1px solid var(--red);
+  background: var(--red);
+  color: var(--paper);
+  .action-number { font-size: 12px; }
+  .action-label { font-size: 32px; letter-spacing: -.04em; font-weight: 700; }
+  .action-description { display: block; font-size: 13px; font-weight: 400; margin-top: 12px; letter-spacing: 0; }
+  &:hover { background: var(--red-hover); }
+`;
+export const ModifyQuiz = styled(TakeQuiz)`
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--paper);
+  .action-description { color: var(--muted); }
+  &:hover { background: var(--surface-hover); border-color: var(--paper); }
+`;

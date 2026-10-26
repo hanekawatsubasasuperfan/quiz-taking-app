@@ -1,73 +1,40 @@
-import { useState, useEffect, useRef, type ChangeEvent} from 'react';
+import { useState, type SubmitEvent } from 'react';
 import Modal from './modal';
-import {Answer, AnswerDiv, CloseButton, Question, QuestionDiv, Submit, TopBar, Wrapper} from './NewQuestionModal.styles'
+import { Answer, AnswerDiv, CloseButton, Question, QuestionDiv, Submit, TopBar, Wrapper } from './NewQuestionModal.styles';
 
-export interface NewQuestionData{
-    question: string;
-    answer: string;
+interface NewQuestionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  handleSubmit: (question: string, answer: string) => Promise<void>;
 }
 
-interface NewQuestionModalProps{
-    isOpen: boolean;
-    onSubmit: (data?: NewQuestionData) => boolean;
-    onClose: () => void;
-    handleSubmit: (question: string, answer: string) => void;
-}
+export default function NewQuestionModal({ isOpen, onClose, handleSubmit }: NewQuestionModalProps) {
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
 
-export default function NewQuestionModal({
-    isOpen, 
-    onClose, 
-    handleSubmit
-    }:NewQuestionModalProps){
-        const focusInputRef = useRef<HTMLInputElement>(null);
-        const [question, setQuestion] = useState("")
-        const [answer, setAnswer] = useState("")
-        
-        useEffect(()=>{
-            if(isOpen && focusInputRef.current){
-                setTimeout(()=>{
-                    focusInputRef.current?.focus()
-                },)
-            }
-        },[isOpen])
+  async function submit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      await handleSubmit(question.trim(), answer.trim());
+      setQuestion('');
+      setAnswer('');
+    } catch { setError('Could not add your question. Please try again.'); }
+    finally { setBusy(false); }
+  }
 
-        function handleQuestionChange(e: ChangeEvent<HTMLInputElement>){
-            setQuestion(e.target.value)
-        }  
-        
-        function handleAnswerChange(e: ChangeEvent<HTMLInputElement>){
-            setAnswer(e.target.value)
-        }   
-
-        
-        function handleClose(){
-            onClose();
-        }
-        
-        return(
-            <Modal
-                hasCloseBtn = {false}
-                isOpen = {isOpen}
-            >
-                <Wrapper>
-                    <TopBar>
-                        <CloseButton onClick = {handleClose}>
-                            X
-                        </CloseButton>
-                    </TopBar>
-                    <QuestionDiv>
-                        Question
-                        <Question onChange={handleQuestionChange}/>
-                    </QuestionDiv>
-                    <AnswerDiv>
-                        Answer
-                        <Answer onChange={handleAnswerChange}/>
-                    </AnswerDiv>
-                    
-                    <Submit onClick={()=>{handleSubmit(question, answer)}}>
-                        Submit
-                    </Submit>
-                </Wrapper>
-            </Modal>
-        )
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} labelledBy="new-question-heading">
+      <Wrapper onSubmit={submit}>
+        <TopBar><h2 id="new-question-heading">New question.</h2><CloseButton type="button" aria-label="Close dialog" disabled={busy} onClick={onClose}>×</CloseButton></TopBar>
+        <QuestionDiv>Question<Question data-autofocus required value={question} onChange={event => setQuestion(event.target.value)} /></QuestionDiv>
+        <AnswerDiv>Answer<Answer required value={answer} onChange={event => setAnswer(event.target.value)} /></AnswerDiv>
+        {error && <p className="form-error" role="alert">{error}</p>}
+        <Submit type="submit" disabled={busy || !question.trim() || !answer.trim()}>{busy ? 'Adding…' : 'Add question →'}</Submit>
+      </Wrapper>
+    </Modal>
+  );
 }

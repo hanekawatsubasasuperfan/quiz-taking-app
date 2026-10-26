@@ -1,53 +1,24 @@
-import { useRef, type ReactNode, useEffect, type KeyboardEvent, } from "react"
+import { useRef, type ReactNode, useEffect } from 'react';
 
 interface ModalProps {
-    isOpen: boolean;
-    hasCloseBtn?: boolean;
-    onClose?: () => void;
-    children: ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  labelledBy: string;
+  children: ReactNode;
 }
 
+export default function Modal({ children, isOpen, onClose, labelledBy }: ModalProps) {
+  const modalRef = useRef<HTMLDialogElement>(null);
 
-export default function Modal({children,isOpen, onClose, hasCloseBtn}:ModalProps) {
-    const modalRef = useRef<HTMLDialogElement>(null);
-    const style = {
-        border:"3px solid pink",
-        // borderRadius:"16px"
+  useEffect(() => {
+    const modal = modalRef.current;
+    if (!modal) return;
+    if (isOpen && !modal.open) {
+      modal.showModal();
+      modal.querySelector<HTMLElement>('[data-autofocus]')?.focus();
     }
+    else if (!isOpen && modal.open) modal.close();
+  }, [isOpen]);
 
-    useEffect(()=>{
-        const modal = modalRef.current;
-        if(!modal){
-            return;
-        }
-
-        if(isOpen){
-            modal.showModal()
-        }else{
-            modal.close();
-        }
-    },[isOpen])
-
-    function handleClose(){
-            if(onClose) {
-                onClose();
-            }
-        }
-        
-        function handleKeyDown(e: KeyboardEvent<HTMLDialogElement>){
-            if(e.key == "Escape"){
-                handleClose();
-            }
-        }
-
-    return(
-        <dialog ref = {modalRef} onKeyDown={handleKeyDown} style={style}>
-            {hasCloseBtn && (
-                <button onClick={handleClose}>
-                    Close
-                </button>
-            )}
-            {children}
-        </dialog>
-    )
+  return <dialog ref={modalRef} aria-labelledby={labelledBy} onCancel={event => { event.preventDefault(); onClose(); }}>{children}</dialog>;
 }

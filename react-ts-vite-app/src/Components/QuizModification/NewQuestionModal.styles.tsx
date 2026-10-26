@@ -1,46 +1,27 @@
-import styled from "styled-components";
+import styled from 'styled-components';
+import { TextInput, SaveQuizButton } from './index.styles';
 
-export const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap:5vh;
-    width:20vw;
+export const Wrapper = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `;
-
-export const QuestionDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-export const AnswerDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-export const Question = styled.input`
-    height: 3.5vh;
-`;
-
-export const Answer = styled.input`
-    height: 3.5vh;
-`;
-
+export const QuestionDiv = styled.label`display: flex; flex-direction: column; gap: 10px; font-size: 12px; font-weight: 600;`;
+export const AnswerDiv = styled(QuestionDiv)``;
+export const Question = styled(TextInput)``;
+export const Answer = styled(TextInput)``;
 export const TopBar = styled.div`
-    width:100%;
-    height: 4.5vh;
-    background-color: pink;
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  h2 { margin: 0; font-size: 24px; letter-spacing: -.04em; }
 `;
-
-export const CloseButton = styled.div`
-    cursor: pointer;
-    color:white;
-    margin-right: 1rem;
-    font-size: 2rem;
+export const CloseButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  color: var(--paper);
+  background: transparent;
+  font-size: 22px;
 `;
-
-export const Submit = styled.button`
-    height: 4.5vh;
-`;
+export const Submit = styled(SaveQuizButton)``;

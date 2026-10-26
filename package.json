@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "dev:api": "PORT=8001 npm run dev --prefix backend",
+    "dev:web": "npm run dev --prefix react-ts-vite-app"
+  },
   "dependencies": {
     "express": "^5.2.1",
     "pg": "^8.22.0",

@@ -10,7 +10,7 @@ interface AuthResult {
 
 
 export default async function authenticate(): Promise<AuthResult>{
-    const response = await fetch("http://localhost:8000/api/auth/dashboard", {
+    const response = await fetch("/api/auth/dashboard", {
         credentials:"include", // makes sure cookies are stored
         method:"GET",
         });

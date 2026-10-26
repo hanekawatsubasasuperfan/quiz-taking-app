@@ -15,7 +15,7 @@ interface Result{
 }
 
 export default async function modifyQuiz(quizID: number, modifiedQuiz: ModifiedQuiz): Promise<Result>{
-    const res = await fetch(`http://localhost:8000/api/quiz/modify/${quizID}`,
+    const res = await fetch(`/api/quiz/modify/${quizID}`,
         {
             credentials:"include",
             method:"PATCH",
