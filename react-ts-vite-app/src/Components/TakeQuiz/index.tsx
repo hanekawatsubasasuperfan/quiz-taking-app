@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getRouteApi, Link } from '@tanstack/react-router';
 import { Wrapper, QuizContainer, FlipCard, FlipInner, FlipFront, FlipBack, CardTitle, CardLabel, FlipHint, QuestionMeta, ButtonGroup, Button } from './index.styles';
+import ReviewNotebook from '../ReviewNotebook';
 
 export default function Quiz() {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -11,7 +12,6 @@ export default function Quiz() {
   const { questions } = route.useLoaderData();
   const { quizID } = route.useParams();
   const question = questions[index];
-  const grade = Object.values(marks).filter(Boolean).length;
 
   function moveTo(next: number) {
     setIndex(next);
@@ -30,13 +30,10 @@ export default function Quiz() {
       ) : (
         <QuizContainer>
           {finished ? (
-            <div className="result" role="status">
-              <p className="eyebrow">Session complete</p>
-              <h1 className="page-heading">That’s a wrap.</h1>
-              <p className="result-score">{Math.round(grade / questions.length * 100)}%</p>
-              <p className="page-description">{grade} of {questions.length} questions marked correct.</p>
+            <>
+              <ReviewNotebook questions={questions} marks={marks} />
               <Button $variant="primary" onClick={() => { setMarks({}); moveTo(0); setFinished(false); }}>Practice again →</Button>
-            </div>
+            </>
           ) : (
             <>
               <div className="session-header">
@@ -48,7 +45,7 @@ export default function Quiz() {
                   <FlipFront aria-hidden={isFlipped}>
                     <CardLabel>Question {String(index + 1).padStart(2, '0')}</CardLabel>
                     <CardTitle>{question.question}</CardTitle>
-                    <FlipHint>Click or press Enter to reveal answer ↗</FlipHint>
+                    <FlipHint>Click or press Enter to reveal answer</FlipHint>
                   </FlipFront>
                   <FlipBack aria-hidden={!isFlipped}>
                     <CardLabel>Answer</CardLabel>

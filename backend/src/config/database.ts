@@ -1,6 +1,7 @@
 import {Pool} from 'pg';
 import dotenv from 'dotenv';
-dotenv.config()
+import { logger } from '../utils/logger.js';
+dotenv.config({ quiet: true });
 
 
 export const pool = new Pool({
@@ -9,4 +10,8 @@ export const pool = new Pool({
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
+});
+
+pool.on('error', (error) => {
+    logger.error('DATABASE_POOL_ERROR', 'An idle database connection failed', { error });
 });

@@ -14,7 +14,7 @@ export default function AuthHeading({ id, children }: { id: string; children: Re
               <stop offset="1" stopColor="var(--surface-deep)" />
             </linearGradient>
           </defs>
-          <path d="M80 136C46 136 18 117 18 91C18 66 36 48 60 46C68 22 90 12 112 22C132 2 166 3 185 18C212 2 252 7 266 32C297 19 328 34 335 58C364 59 383 75 383 97C383 120 361 136 333 136Z" fill={`url(#${gradientId})`} stroke="var(--paper)" strokeWidth="3" />
+          <path d="M80 136C46 136 18 117 18 91C18 66 36 48 60 46C68 22 90 12 112 22C132 2 166 3 185 18C212 2 252 7 266 32C297 19 328 34 335 58C364 59 383 75 383 97C383 120 361 136 333 136Z" fill={`url(#${gradientId})`} stroke="var(--text)" strokeWidth="3" />
         </svg>
         <span>{children}</span>
       </CloudHeading>

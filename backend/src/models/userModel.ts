@@ -5,7 +5,8 @@ export async function getUsers(){
         let res = await pool.query("SELECT * FROM users");
         return (res.rows);
     }catch(err){
-        console.log(err)
+        // Let the shared error handler record this failure and return a 500 response.
+        throw err;
     }
 }
 

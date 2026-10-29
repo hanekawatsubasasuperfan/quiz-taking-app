@@ -5,11 +5,10 @@ import getAllQuestionsForQuiz from '../../../api/quiz/questions';
 
 export const Route = createFileRoute('/quiz/quizModification/$quizID')({
     loader:async ({params})=>{
-        // ADD AUTHENTICATION TO MAKE SURE USER HAS PERMISSION TO VIEW THIS QUIZ
             const auth = await authenticate();
-            if(!auth){
+            if(!auth.authenticated){
                 throw redirect({
-                    to:'/'
+                    to:'/login'
                 })
             }
             const data = await getAllQuestionsForQuiz(Number(params.quizID))

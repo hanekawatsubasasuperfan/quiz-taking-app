@@ -1,27 +1,35 @@
-import { Wrapper, ActionGrid, TakeQuiz, ModifyQuiz } from './index.styles';
-import { getRouteApi, Link, useNavigate } from '@tanstack/react-router';
+import { Wrapper, NoteList, NoteItem } from './index.styles';
+import { getRouteApi, Link } from '@tanstack/react-router';
+import ArrowIcon from '../ArrowIcon';
+import { PaperSurface as Notebook } from '../Notebook/index.styles';
 
 export default function QuizOptions() {
   const route = getRouteApi('/quiz/$quizID');
   const { quizID } = route.useLoaderData();
-  const navigate = useNavigate();
 
   return (
     <Wrapper>
-      <Link className="back-link" to="/user">← Back to library</Link>
-      <p className="eyebrow">Quiz {String(quizID).padStart(2, '0')}</p>
-      <h1 className="page-heading">Ready when<br />you are.</h1>
-      <p className="page-description">Put your knowledge to work, or fine-tune your questions.</p>
-      <ActionGrid>
-        <TakeQuiz onClick={() => navigate({ to: '/quiz/takeQuiz/$quizID', params: { quizID } })}>
-          <span className="action-number">01 / PRACTICE</span>
-          <span className="action-label">Take quiz ↗<span className="action-description">Flip the cards. See what you remember.</span></span>
-        </TakeQuiz>
-        <ModifyQuiz onClick={() => navigate({ to: '/quiz/quizModification/$quizID', params: { quizID } })}>
-          <span className="action-number">02 / EDIT</span>
-          <span className="action-label">Edit quiz ↗<span className="action-description">Add, edit, or remove your questions.</span></span>
-        </ModifyQuiz>
-      </ActionGrid>
+      <Link className="notebook-back" to="/user"><span><ArrowIcon direction="left" /></span>Back to library</Link>
+      <Notebook aria-labelledby="quiz-notes-heading">
+        <span className="binder-holes" aria-hidden="true"><i /><i /><i /></span>
+        <h1 id="quiz-notes-heading">Quiz {String(quizID).padStart(2, '0')}</h1>
+        <NoteList role="list" aria-label="Quiz actions">
+          <NoteItem>
+            <Link to="/quiz/takeQuiz/$quizID" params={{ quizID }}>
+              <span className="note-bullet" aria-hidden="true">•</span>
+              <span className="note-label">Take quiz</span>
+              <span className="note-arrow"><ArrowIcon /></span>
+            </Link>
+          </NoteItem>
+          <NoteItem>
+            <Link to="/quiz/quizModification/$quizID" params={{ quizID }}>
+              <span className="note-bullet" aria-hidden="true">•</span>
+              <span className="note-label">Edit quiz</span>
+              <span className="note-arrow"><ArrowIcon /></span>
+            </Link>
+          </NoteItem>
+        </NoteList>
+      </Notebook>
     </Wrapper>
   );
 }

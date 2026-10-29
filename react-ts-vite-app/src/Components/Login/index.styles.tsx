@@ -30,7 +30,7 @@ export const LoginText = styled.h1`
   display: grid;
   place-items: center;
   padding: 4% 12% 0 18%;
-  color: var(--paper);
+  color: var(--text);
   text-align: center;
   font-size: clamp(28px, 6vw, 40px);
   font-weight: 800;
@@ -45,7 +45,7 @@ export const LoginText = styled.h1`
   &::before {
     inset: 0;
     z-index: -2;
-    background: var(--paper);
+    background: var(--text);
   }
   &::after {
     inset: 4px;
@@ -61,7 +61,7 @@ export const CloudHeading = styled.h1`
   aspect-ratio: 400 / 150;
   margin: 0 0 36px;
   padding-top: 24px;
-  color: var(--paper);
+  color: var(--text);
   font-size: clamp(28px, 6vw, 40px);
   font-weight: 800;
   letter-spacing: -.06em;
@@ -89,7 +89,7 @@ export const Rain = styled.div`
     width: 2px;
     height: 16px;
     border-radius: 2px;
-    background: linear-gradient(transparent, var(--paper));
+    background: linear-gradient(transparent, var(--text));
     animation: ${rainfall} 1.4s linear infinite;
     &:nth-child(3n) { background: linear-gradient(transparent, var(--red)); }
   }
@@ -107,10 +107,10 @@ export const UsernameInput = styled.input.attrs({ type: 'text', placeholder: 'Yo
   border: 1px solid var(--line);
   border-radius: 0;
   background: var(--surface);
-  color: var(--paper);
+  color: var(--text);
   margin-bottom: 12px;
   &::placeholder { color: var(--muted); }
-  &:focus { border-color: var(--paper); }
+  &:focus { border-color: var(--text); }
 `;
 export const PasswordInput = styled(UsernameInput).attrs({ type: 'password', placeholder: 'Your password', autoComplete: 'current-password' })``;
 export const Submit = styled.input.attrs({ type: 'submit' })`

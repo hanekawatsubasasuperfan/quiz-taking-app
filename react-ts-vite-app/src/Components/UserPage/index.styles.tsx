@@ -11,7 +11,7 @@ export const Wrapper = styled.main`
   h1 {
     margin: 0;
     padding: 0 24px;
-    color: var(--paper);
+    color: var(--text);
     text-align: center;
     font-size: clamp(24px, 4vw, 32px);
     font-weight: 600;
@@ -28,28 +28,11 @@ export const Wrapper = styled.main`
   }
 `;
 
-export const LayoutToggle = styled.div`
-  display: inline-flex;
-  padding: 4px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  button {
-    min-height: 36px;
-    padding: 8px 16px;
-    border: 0;
-    background: transparent;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-  }
-  button[aria-pressed='true'] { background: var(--paper); color: var(--ink); }
-  button:hover:not([aria-pressed='true']) { color: var(--paper); }
-`;
-
-export const Carousel = styled.ul<{ $vertical: boolean }>`
-  --card-width: ${({ $vertical }) => $vertical ? '320px' : '540px'};
+export const Carousel = styled.ul`
+  --card-width: 320px;
   position: relative;
   display: flex;
+  align-items: flex-start;
   gap: 32px;
   width: 100%;
   margin: 0;
@@ -70,12 +53,12 @@ export const Carousel = styled.ul<{ $vertical: boolean }>`
   }
 `;
 
-export const QuizCard = styled.button<{ $active: boolean; $vertical: boolean }>`
+export const QuizCard = styled.button<{ $active: boolean }>`
   position: relative;
   isolation: isolate;
   overflow: hidden;
   width: 100%;
-  aspect-ratio: ${({ $vertical }) => $vertical ? '5 / 7' : '7 / 5'};
+  aspect-ratio: 5 / 7;
   min-width: 0;
   min-height: 360px;
   padding: 26px;
@@ -84,14 +67,14 @@ export const QuizCard = styled.button<{ $active: boolean; $vertical: boolean }>`
   align-items: stretch;
   gap: 20px;
   border: 3px solid var(--paper);
-  background: var(--surface-deep);
+  background: var(--ink);
   color: var(--paper);
   box-shadow: 7px 7px 0 ${({ $active }) => $active ? 'var(--red)' : 'var(--line)'};
   opacity: ${({ $active }) => $active ? 1 : .65};
   text-align: left;
   transition: opacity .2s, box-shadow .2s;
   .card-art { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
-  .quiz-index { align-self: flex-start; padding: 4px 9px; border: 1px solid var(--surface-deep); background: var(--paper); color: var(--ink); font-family: 'Courier New', monospace; font-size: 15px; font-weight: 800; transform: rotate(-5deg); }
+  .quiz-index { align-self: flex-start; padding: 4px 9px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font-family: 'Courier New', monospace; font-size: 15px; font-weight: 800; transform: rotate(-5deg); }
   h2 {
     flex: 1;
     display: grid;
@@ -99,7 +82,7 @@ export const QuizCard = styled.button<{ $active: boolean; $vertical: boolean }>`
     min-width: 0;
     margin: 0;
     text-align: center;
-    font-size: ${({ $vertical }) => $vertical ? '24px' : 'clamp(28px, 4.5vw, 44px)'};
+    font-size: 24px;
     font-weight: 700;
     line-height: 1.65;
   }
@@ -112,21 +95,21 @@ export const QuizCard = styled.button<{ $active: boolean; $vertical: boolean }>`
     color: var(--ink);
     font-family: Georgia, 'Times New Roman', serif;
     line-height: 1.05;
-    box-shadow: 1px 2px 0 var(--surface-deep);
+    box-shadow: 1px 2px 0 var(--ink);
     transform: rotate(-4deg);
   }
   .cutout-letter:nth-child(2n) { background: var(--ink); color: var(--paper); border-color: var(--paper); font-family: Arial, sans-serif; transform: rotate(4deg) translateY(-2px); }
   .cutout-letter:nth-child(3n) { font-family: 'Courier New', monospace; transform: rotate(-7deg) translateY(2px); }
   .cutout-letter:nth-child(5n) { transform: rotate(7deg) scaleY(1.1); }
   &[data-long-title] { aspect-ratio: auto; }
-  &[data-long-title] h2 { font-size: clamp(20px, 3vw, 28px); }
+  &[data-long-title] h2 { font-size: clamp(18px, 3vw, 20px); }
   .quiz-bottom { display: flex; align-items: center; justify-content: space-between; }
   .quiz-action { padding: 6px 12px; border: 1px solid var(--paper); background: var(--ink); font-size: 15px; font-weight: 700; transform: rotate(-2deg); }
   .quiz-arrow { padding: 0 8px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font-size: 30px; line-height: 1.2; transform: rotate(5deg); }
   &:hover { opacity: 1; box-shadow: 7px 7px 0 var(--red); }
-  &:focus-visible { outline: 2px solid var(--paper); outline-offset: 5px; opacity: 1; }
+  &:focus-visible { outline: 2px solid var(--text); outline-offset: 5px; opacity: 1; }
   @media (max-width: 600px) {
-    min-height: ${({ $vertical }) => $vertical ? '300px' : '220px'};
+    min-height: 300px;
     padding: 20px;
     h2 { font-size: clamp(20px, 6vw, 28px); }
   }
@@ -138,10 +121,11 @@ export const CarouselControls = styled.div`
   justify-content: center;
   gap: 24px;
   margin-top: 16px;
-  color: var(--paper);
+  color: var(--text);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   .total { color: var(--muted); }
-  button { width: 44px; height: 44px; border: 1px solid var(--line); background: var(--ink); color: var(--paper); font-size: 23px; }
-  button:hover:not(:disabled) { border-color: var(--paper); background: var(--paper); color: var(--ink); }
+  button { display: grid; place-items: center; width: 52px; height: 48px; border: 2px solid var(--text); background: var(--red); color: var(--paper); box-shadow: 3px 3px 0 var(--text); }
+  button:hover:not(:disabled) { background: var(--red-hover); transform: translateY(-2px); }
+  button:disabled { opacity: 1; background: var(--surface); color: var(--muted); border-color: var(--line); box-shadow: none; }
 `;

@@ -14,8 +14,6 @@ export const QuizContainer = styled.section`
   .session-progress::-webkit-progress-bar { background: var(--line); }
   .session-progress::-webkit-progress-value { background: var(--red); }
   .session-progress::-moz-progress-bar { background: var(--red); }
-  .result { padding: 48px 0; }
-  .result-score { color: var(--red); font-size: clamp(64px, 15vw, 120px); line-height: 1; font-weight: 800; letter-spacing: -.07em; margin: 32px 0 20px; }
 `;
 export const FlipCard = styled.button`
   display: block;
@@ -48,7 +46,7 @@ const CardFace = styled.span`
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 `;
-export const FlipFront = styled(CardFace)`background: var(--paper); color: var(--ink);`;
+export const FlipFront = styled(CardFace)`background: var(--paper); color: var(--ink); border: 1px solid var(--line);`;
 export const FlipBack = styled(CardFace)`background: var(--red); color: var(--paper); transform: rotateY(180deg);`;
 export const CardTitle = styled.span`
   font-size: clamp(23px, 4vw, 36px);
@@ -89,9 +87,9 @@ export const Button = styled.button<{ $variant: ButtonVariant; $selected?: boole
   padding: 12px 20px;
   border: 1px solid ${({ $selected, $variant }) => $selected || $variant === 'primary' ? 'var(--red)' : 'var(--line)'};
   background: ${({ $selected, $variant }) => $selected || $variant === 'primary' ? 'var(--red)' : 'transparent'};
-  color: var(--paper);
+  color: ${({ $selected, $variant }) => $selected || $variant === 'primary' ? 'var(--paper)' : 'var(--text)'};
   font-size: 13px;
   font-weight: 600;
-  &:hover:not(:disabled) { border-color: var(--paper); }
+  &:hover:not(:disabled) { border-color: var(--text); }
   @media (max-width: 600px) { padding: 12px 14px; }
 `;

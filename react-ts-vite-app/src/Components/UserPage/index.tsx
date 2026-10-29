@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
-import { Carousel, CarouselControls, LayoutToggle, QuizCard, Wrapper } from './index.styles';
+import { Carousel, CarouselControls, QuizCard, Wrapper } from './index.styles';
+import ArrowIcon from '../ArrowIcon';
 
 const spiral = Array.from({ length: 281 }, (_, index) => {
   const angle = index / 280 * Math.PI * 8;
@@ -29,7 +30,6 @@ export default function Index() {
   const { quizzes } = routeApi.useLoaderData();
   const trackRef = useRef<HTMLUListElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isVertical, setIsVertical] = useState(false);
   const formatNumber = (value: number) => String(value).padStart(2, '0');
 
   useLayoutEffect(() => {
@@ -37,7 +37,7 @@ export default function Index() {
     const card = track?.querySelector<HTMLLIElement>('li[data-active]');
     if (!track || !card) return;
     track.scrollTo({ left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior: 'instant' });
-  }, [isVertical]);
+  }, []);
 
   function slideTo(index: number, focusCard = false) {
     const track = trackRef.current;
@@ -65,12 +65,6 @@ export default function Index() {
     <Wrapper>
       <div className="selection-heading">
         <h1>Pick your next palace!</h1>
-        {quizzes.length > 0 && (
-          <LayoutToggle role="group" aria-label="Card orientation">
-            <button type="button" aria-pressed={!isVertical} aria-controls="quiz-carousel" onClick={() => setIsVertical(false)}>Horizontal</button>
-            <button type="button" aria-pressed={isVertical} aria-controls="quiz-carousel" onClick={() => setIsVertical(true)}>Vertical</button>
-          </LayoutToggle>
-        )}
       </div>
       {quizzes.length ? (
         <section className="quiz-selection" aria-label="Quiz selection" aria-roledescription="carousel" onKeyDown={event => {
@@ -79,13 +73,12 @@ export default function Index() {
             slideTo(Math.max(0, Math.min(quizzes.length - 1, activeIndex + (event.key === 'ArrowRight' ? 1 : -1))), true);
           }
         }}>
-          <Carousel $vertical={isVertical} ref={trackRef} id="quiz-carousel" onScroll={updatePosition}>
+          <Carousel ref={trackRef} id="quiz-carousel" onScroll={updatePosition}>
             {quizzes.map((quiz, index) => (
               <li key={quiz.id} data-active={index === activeIndex || undefined}>
                 <QuizCard
                   type="button"
                   $active={index === activeIndex}
-                  $vertical={isVertical}
                   data-long-title={quiz.title.length > 48 || undefined}
                   aria-label={`Open ${quiz.title}`}
                   onFocus={() => slideTo(index)}
@@ -103,9 +96,9 @@ export default function Index() {
           </Carousel>
           {quizzes.length > 1 && (
             <CarouselControls>
-              <button type="button" aria-label="Previous quiz" aria-controls="quiz-carousel" disabled={activeIndex === 0} onClick={() => slideTo(activeIndex - 1)}>←</button>
+              <button type="button" aria-label="Previous quiz" aria-controls="quiz-carousel" disabled={activeIndex === 0} onClick={() => slideTo(activeIndex - 1)}><ArrowIcon direction="left" /></button>
               <span aria-live="polite" aria-atomic="true">{formatNumber(activeIndex + 1)} <span className="total">/ {formatNumber(quizzes.length)}</span></span>
-              <button type="button" aria-label="Next quiz" aria-controls="quiz-carousel" disabled={activeIndex === quizzes.length - 1} onClick={() => slideTo(activeIndex + 1)}>→</button>
+              <button type="button" aria-label="Next quiz" aria-controls="quiz-carousel" disabled={activeIndex === quizzes.length - 1} onClick={() => slideTo(activeIndex + 1)}><ArrowIcon /></button>
             </CarouselControls>
           )}
         </section>

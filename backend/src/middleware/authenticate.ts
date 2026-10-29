@@ -1,5 +1,6 @@
 import type {Request, Response, NextFunction} from 'express'
 import jwt from "jsonwebtoken";
+import { logger } from '../utils/logger.js';
 
 
 export function authenticate(
@@ -39,6 +40,9 @@ export function authenticate(
             
             next();
         }catch(err){
+            logger.error('AUTH_TOKEN_REJECTED', 'Authentication token was rejected', {
+                requestId: res.locals.requestId, error: err, token: 'tokens',
+            });
             return res.status(401).json({
                 status: "error",
                 msg: "Invalid token.",

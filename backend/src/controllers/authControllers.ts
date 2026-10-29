@@ -4,6 +4,7 @@ import type {Request, Response} from 'express'
 import {authCookieConfig} from '../config/cookieConfigs.js'
 import {pool} from '../config/database.js'
 import { generateToken } from '../utils/generateToken.js';
+import { logger } from '../utils/logger.js';
 
 
 export async function signup(req: Request, res: Response){
@@ -73,7 +74,7 @@ export async function signup(req: Request, res: Response){
             code: 3,
         })
     }catch(err: unknown){
-        console.log(err)
+        logger.error('AUTH_SIGNUP_FAILED', 'Unable to create user', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status: 'error',
             msg: 'Internal server error',
@@ -124,6 +125,7 @@ export async function login(req:Request, res: Response){
         })
 
     }catch(err: unknown){
+        logger.error('AUTH_LOGIN_FAILED', 'Unable to log in', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status: 'error',
             msg: 'Internal server error.',
@@ -169,7 +171,7 @@ export async function dashboard(req:Request, res:Response){
         code:1
         });
     } catch (error) {
-
+        logger.error('AUTH_DASHBOARD_FAILED', 'Unable to retrieve user', { requestId: res.locals.requestId, error });
         return res.status(500).json({
         status: "error",
         msg: "Unable to retrieve user",
@@ -191,6 +193,7 @@ export async function logout(req: Request, res: Response){
             msg: "Logged out successfully",
         });
     }catch(err){
+        logger.error('AUTH_LOGOUT_FAILED', 'Unable to log out', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status: "error",
             msg: "Internal server error",

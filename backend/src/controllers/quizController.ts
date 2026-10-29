@@ -1,5 +1,6 @@
 import { validationResult } from 'express-validator';
 import {pool} from '../config/database.js'
+import { logger } from '../utils/logger.js';
 import type {Request, Response} from 'express'
 
 interface Question{
@@ -40,6 +41,7 @@ export async function createQuiz(req: Request, res: Response){
             code:0
         })
     }catch(err){
+        logger.error('QUIZ_CREATE_FAILED', 'Unable to create quiz', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
@@ -74,6 +76,7 @@ export async function getAllQuizzes(req: Request, res: Response){
             code:0
         })
     }catch(err){
+        logger.error('QUIZ_LIST_FAILED', 'Unable to retrieve quizzes', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
@@ -100,6 +103,7 @@ export async function getAllQuestionsForQuiz(req:Request, res: Response){
             code:0
         })
     }catch(err){
+        logger.error('QUESTION_LIST_FAILED', 'Unable to retrieve questions', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
@@ -154,7 +158,6 @@ export async function createQuestions(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const {questions} = req.body;
-        console.log(req.body)
 
         // check if user has permission to the quiz
         const userID = req.user?.id
@@ -193,7 +196,7 @@ export async function createQuestions(req: Request, res: Response){
         })
 
     }catch(err){
-        console.log(err)
+        logger.error('QUESTION_CREATE_FAILED', 'Unable to create questions', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
@@ -214,7 +217,12 @@ async function BulkModifyQuestions(questions: Question[], quizID: number){
         }
         await pool.query("COMMIT");
     }catch(err){
-        await pool.query("ROLLBACK");
+        try {
+            await pool.query("ROLLBACK");
+        } catch (rollbackError) {
+            logger.error('DATABASE_ROLLBACK_FAILED', 'Unable to roll back question changes', { error: rollbackError });
+        }
+        throw err;
     }
 }
 
@@ -251,6 +259,7 @@ export async function modifyQuestion(req: Request, res: Response){
         })
 
     }catch(err){
+        logger.error('QUESTION_MODIFY_FAILED', 'Unable to modify questions', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",
@@ -264,7 +273,6 @@ async function BulkDeleteQuestions(questionIDs: Number[], quizID: number) {
     try{
         await pool.query("BEGIN");
         for(const id of questionIDs){
-            console.log(id)
             await pool.query(
                 "DELETE FROM questions WHERE id = $1 AND quiz_id = $2",
                 [id, quizID]
@@ -272,7 +280,12 @@ async function BulkDeleteQuestions(questionIDs: Number[], quizID: number) {
         }
         await pool.query("COMMIT");
     }catch(err){
-        await pool.query("ROLLBACK");
+        try {
+            await pool.query("ROLLBACK");
+        } catch (rollbackError) {
+            logger.error('DATABASE_ROLLBACK_FAILED', 'Unable to roll back question changes', { error: rollbackError });
+        }
+        throw err;
     }
     
 }
@@ -281,11 +294,7 @@ export async function deleteQuestion(req: Request, res: Response){
     try{
         const quizID = Number(req.params.quizId);
         const body = req.body;
-        // console.log(quizID)
-        console.log(body)
         // first check if user has permission to this quiz
-        // console.log(quizID)
-        console.log(body.questionIDs)
         const quizResult = await pool.query(
         `
             SELECT id
@@ -311,7 +320,7 @@ export async function deleteQuestion(req: Request, res: Response){
             code:0
         })
     }catch(err){
-        console.log(err)
+        logger.error('QUESTION_DELETE_FAILED', 'Unable to delete questions', { requestId: res.locals.requestId, error: err });
         return res.status(500).json({
             status:"error",
             msg:"Internal server error",

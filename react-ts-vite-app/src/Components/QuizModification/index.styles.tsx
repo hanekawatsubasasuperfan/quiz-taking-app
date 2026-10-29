@@ -76,7 +76,7 @@ export const QuestionItem = styled.button<{ $isSelected: boolean }>`
   border: 0;
   border-left: 2px solid ${({ $isSelected }) => $isSelected ? 'var(--red)' : 'transparent'};
   background: ${({ $isSelected }) => $isSelected ? 'var(--surface)' : 'transparent'};
-  color: var(--paper);
+  color: var(--text);
   span { color: ${({ $isSelected }) => $isSelected ? 'var(--red)' : 'var(--muted)'}; font-size: 12px; font-variant-numeric: tabular-nums; }
   p { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; }
   &:hover { background: var(--surface); }
@@ -86,9 +86,9 @@ export const AddQuestionButton = styled.button`
   padding: 14px 12px;
   border: 1px solid var(--line);
   background: transparent;
-  color: var(--paper);
+  color: var(--text);
   font-size: 13px;
-  &:hover { border-color: var(--paper); }
+  &:hover { border-color: var(--text); }
 `;
 export const EditorPanel = styled.section`
   min-width: 0;
@@ -112,9 +112,9 @@ export const TextInput = styled.input`
   border: 1px solid var(--line);
   border-radius: 0;
   background: var(--surface);
-  color: var(--paper);
+  color: var(--text);
   font-size: 15px;
-  &:focus { border-color: var(--paper); }
+  &:focus { border-color: var(--text); }
 `;
 export const TextArea = styled.textarea`
   width: 100%;
@@ -124,10 +124,10 @@ export const TextArea = styled.textarea`
   border: 1px solid var(--line);
   border-radius: 0;
   background: var(--surface);
-  color: var(--paper);
+  color: var(--text);
   font: inherit;
   line-height: 1.6;
-  &:focus { border-color: var(--paper); }
+  &:focus { border-color: var(--text); }
 `;
 export const ActionRow = styled.div`
   margin-top: auto;

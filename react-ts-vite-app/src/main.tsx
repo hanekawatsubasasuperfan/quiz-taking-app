@@ -10,6 +10,9 @@ const router = createRouter({ routeTree })
 
 import './index.css'
 import { GlobalPalette } from './styles/GlobalPalette'
+import { applyColorMode, getInitialColorMode } from './styles/colorMode'
+
+applyColorMode(getInitialColorMode());
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
